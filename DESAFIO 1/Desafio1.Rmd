@@ -1,0 +1,107 @@
+---
+title: "Desafio 1"
+author: "Elisa Amorim Da Costa 277145"
+date: "2025-08-07"
+output:
+  html_document:
+    self_contained: true
+---
+
+```{r}
+library(reticulate)
+```
+
+
+```{r}
+tempos <- c()
+
+# Método 1: read.csv() do pacote 'base' do R
+
+cat("Iniciando o carregamento com read.csv() (base R)...\n")
+
+# Grava o tempo atual do sistema antes de iniciar a leitura do arquivo.
+ini_base <- Sys.time()
+
+# Lê o arquivo 'flights.csv' de dentro do 'archive.zip'.
+# A função unz() permite acessar um arquivo dentro de um .zip sem descompactá-lo antes.
+# O resultado é armazenado no dataframe 'dados_base'.
+dados_base <- read.csv(unz('archive.zip', "flights.csv")) # A função unz() é usada para ler um arquivo específico de dentro do .zip 
+
+# Grava o tempo do sistema novamente, após a conclusão da leitura.
+fim_base <- Sys.time()
+
+# Calcula a diferença entre o tempo final e inicial para obter a duração.
+tempo_base <- fim_base - ini_base
+
+tempos <- c(tempos, Base_R = tempo_base)
+
+# Imprime o tempo que levou para ser executado.
+cat("Tempo do read.csv() (base R):", tempo_base, "segundos\n\n")
+```
+
+
+```{r message=FALSE, warning=FALSE}
+# Método 2: read_csv() do pacote 'readr' do R
+
+cat("Iniciando o carregamento com read_csv() (readr)...\n")
+
+library(readr)
+
+ini_readr <- Sys.time()
+
+dados_readr <- read_csv('archive.zip')
+
+fim_readr <- Sys.time()
+
+# Calcula a duração.
+tempo_readr <- fim_readr - ini_readr
+
+tempos <- c(tempos, Readr_R = tempo_readr)
+
+# Adiciona o resultado ao vetor 'tempos' com o nome 'Readr_R'.
+cat("Tempo do read_csv() (readr):", tempo_readr, "segundos\n\n")
+```
+
+
+```{r}
+# Método 3: read_csv() do 'pandas' no Python
+cat("Iniciando o carregamento com read_csv() (pandas)...\n")
+
+# A função py_run_string() executa um bloco de código Python como uma string
+py_run_string("
+import time
+import pandas as pd
+import zipfile
+
+ini = time.time()
+
+# Abre o arquivo ZIP
+with zipfile.ZipFile('archive.zip', 'r') as z:
+    # Abre o arquivo específico 'flights.csv' de dentro do ZIP
+    with z.open('flights.csv') as f:
+        # O pandas agora lê o arquivo correto
+        dados = pd.read_csv(f, low_memory=False)
+
+fim = time.time()
+tempo_pandas = fim - ini
+")
+
+# 'py$tempo_pandas' pega o valor da variável 'tempo_pandas' do ambiente Python e o traz para o ambiente R
+tempo_pandas <- py$tempo_pandas
+tempos <- c(tempos, Pandas_Py = tempo_pandas)
+cat("Tempo do read_csv() (pandas):", tempo_pandas, "segundos\n\n")
+```
+
+```{r}
+
+cat("--- Resultado Final ---\n")
+
+# Mostra o vetor 'tempos' com os tempos de cada método.
+print(tempos)
+cat("\nA forma mais rápida de carregar os dados foi:", names(which.min(tempos)), "\n")
+
+# Encontra e anuncia o método mais rápido.
+# which.min(tempos) encontra a POSIÇÃO do menor tempo.
+# names() pega o NOME correspondente a essa posição.
+```
+

@@ -1,0 +1,73 @@
+---
+title: "Desafio 3"
+author: "Elisa Amorim Da Costa"
+output:
+  html_document:
+    self_contained: true
+editor: visual
+---
+
+## JSON
+
+#O arquivo, heart_disease_dataset.json, contém um conjunto de dados anônimos de pacientes, com diversas variáveis clínicas (idade, sexo, colesterol, etc.) utilizadas para prever a presença ou ausência de doenças cardíacas
+
+#Para carregar o arquivo JSON, utiliza-se o pacote jsonlite. Em seguida, a função fromJSON() lê o arquivo e o converte diretamente em um data frame no R.
+
+```{r}
+#| message: false
+#| warning: false
+library(jsonlite)
+library(arrow)
+library(dplyr)
+
+#`jsonlite`: pacote para trabalhar com JSON
+#`arrow`: biblioteca padrão para manipulação de arquivos Parquet no R
+```
+
+#Arquivo JSON sobre doenças cardíacas
+
+```{r}
+unzip("archive.zip")
+
+
+dados_coracao <- fromJSON("heart_disease_dataset.json")
+
+# visualizar as primeiras linhas do data frame
+head(dados_coracao)
+```
+
+```{r}
+# exibir a estrutura do data frame
+str(dados_coracao)
+```
+
+## Parquet
+
+#O arquivo fortune1000_companies.parquet, contém informações sobre as 1000 empresas mais ricas, listadas pela Fortune. O formato Parquet é colunar, otimizado para performance e armazenamento eficiente, muito comum em ambientes de Big Data.
+
+#Para ler arquivos Parquet, utiliza-se o pacote arrow. O código mostra a descompactação do o arquivo .zip somente quando necessário. A função read_parquet() é responsável por ler o arquivo e carregá-lo como um data frame.
+
+#Arquivo sobre as 1000 empresasncom maiores fortunas
+
+```{r}
+
+arquivo_parquet <- "fortune1000_companies.parquet"
+
+
+# verificar se o arquivo .parquet ainda não existe na pasta
+
+if (!file.exists(arquivo_parquet)) {
+  # se não existir, imprime uma mensagem e descompacta o arquivo .zip
+  print("Arquivo não encontrado. Descompactando 'archive_fortune.zip'...")
+  unzip("archive_fortune.zip")
+} else {
+  # se o arquivo já existir, apenas avisa que está pulando a etapa
+  print("Arquivo já existe. Pulando a descompactação.")
+}
+
+dados_fortune <- read_parquet(arquivo_parquet)
+
+head(dados_fortune)
+
+str(dados_fortune)
+```

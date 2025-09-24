@@ -1,0 +1,200 @@
+---
+title: "Desafio 6"
+author: "Elisa Amorim Da Costa"
+format: 
+  html:
+    self-contained: true
+editor: visual
+---
+
+## 1. Configuração Inicial
+
+```{r}
+#| message: false
+#| warning: false
+library(RSQLite)
+library(DBI)
+library(dplyr)
+library(knitr)
+
+path <- "../SQL" 
+
+fname <- file.path(path, "disco.db")
+```
+
+## 2. Conexão com o Banco de Dados
+
+```{r}
+conn <- dbConnect(RSQLite::SQLite(), fname)
+
+class(conn)
+```
+
+## 3. Listando as tabelas existentes no banco de dados
+
+```{r}
+tabelas <- dbListTables(conn)
+print(tabelas)
+```
+
+## 4. Identificando Colunas da Tabela `customers`
+
+```{r}
+colunas_customers <- dbListFields(conn, "customers")
+print(colunas_customers)
+```
+
+## 5. Contagem Total de Clientes
+
+```{r}
+
+query_total_clientes <- "
+  SELECT COUNT(CustomerId) AS total_de_clientes
+  FROM customers;
+"
+resultado_total_clientes <- dbGetQuery(conn, query_total_clientes)
+print(resultado_total_clientes)
+```
+
+## 6. Contagem de Países Distintos
+
+```{r}
+
+query_paises_distintos <- "
+  SELECT COUNT(DISTINCT Country) AS numero_de_paises_distintos
+  FROM customers;
+"
+resultado_paises_distintos <- dbGetQuery(conn, query_paises_distintos)
+print(resultado_paises_distintos)
+```
+
+## 7. Contagem de Clientes por País
+
+```{r}
+query_clientes_por_pais <- "
+  SELECT 
+    Country, 
+    COUNT(CustomerId) AS contagem
+  FROM customers
+  GROUP BY Country
+  ORDER BY contagem DESC;
+"
+resultado_clientes_por_pais <- dbGetQuery(conn, query_clientes_por_pais)
+print(resultado_clientes_por_pais)
+```
+
+## 8. Os 5 Países com Mais Clientes
+
+```{r}
+query_top5_paises <- "
+  SELECT 
+    Country, 
+    COUNT(CustomerId) AS contagem
+  FROM customers
+  GROUP BY Country
+  ORDER BY contagem DESC
+  LIMIT 5;
+"
+resultado_top5_paises <- dbGetQuery(conn, query_top5_paises)
+print(resultado_top5_paises)
+```
+
+## 9. Países com Nomes de 6 Letras
+
+```{r}
+query_paises_length_6 <- "
+  SELECT DISTINCT Country
+  FROM customers
+  WHERE LENGTH(Country) = 6;
+"
+resultado_paises_length_6 <- dbGetQuery(conn, query_paises_length_6)
+
+print(resultado_paises_length_6)
+```
+
+## 10. Músicas Compradas por Clientes Brasileiros
+
+```{r}
+query_musicas_brasil <- "
+  SELECT
+    T.Name AS Musica,
+    C.FirstName || ' ' || C.LastName AS Cliente
+  FROM customers AS C
+  JOIN invoices AS I ON C.CustomerId = I.CustomerId
+  JOIN invoice_items AS II ON I.InvoiceId = II.InvoiceId
+  JOIN tracks AS T ON II.TrackId = T.TrackId
+  WHERE C.Country = 'Brazil'
+  ORDER BY Cliente, Musica;
+"
+resultado_musicas_brasil <- dbGetQuery(conn, query_musicas_brasil)
+print(resultado_musicas_brasil)
+```
+
+## 11. Qual o álbum mais tocado por país?
+
+```{r}
+query_album_por_pais <- "
+WITH VendasAlbumPorPais AS (
+  SELECT
+    C.Country,
+    AL.Title AS Album,
+    AR.Name AS Artista,
+    COUNT(II.InvoiceLineId) AS Vendas,
+    ROW_NUMBER() OVER(PARTITION BY C.Country ORDER BY COUNT(II.InvoiceLineId) DESC) as Rank
+  FROM customers AS C
+  JOIN invoices AS I ON C.CustomerId = I.CustomerId
+  JOIN invoice_items AS II ON I.InvoiceId = II.InvoiceId
+  JOIN tracks AS T ON II.TrackId = T.TrackId
+  JOIN albums AS AL ON T.AlbumId = AL.AlbumId
+  JOIN artists AS AR ON AL.ArtistId = AR.ArtistId
+  GROUP BY C.Country, AL.Title
+)
+SELECT
+  Country,
+  Album,
+  Artista,
+  Vendas
+FROM VendasAlbumPorPais
+WHERE Rank = 1
+ORDER BY Country;
+"
+resultado_album_por_pais <- dbGetQuery(conn, query_album_por_pais)
+print(resultado_album_por_pais)
+```
+
+## 12. Qual o artista mais tocado por país?
+
+```{r}
+query_artista_por_pais <- "
+WITH VendasArtistaPorPais AS (
+  SELECT
+    C.Country,
+    AR.Name AS Artista,
+    COUNT(II.InvoiceLineId) AS Vendas,
+    ROW_NUMBER() OVER(PARTITION BY C.Country ORDER BY COUNT(II.InvoiceLineId) DESC) as Rank
+  FROM customers AS C
+  JOIN invoices AS I ON C.CustomerId = I.CustomerId
+  JOIN invoice_items AS II ON I.InvoiceId = II.InvoiceId
+  JOIN tracks AS T ON II.TrackId = T.TrackId
+  JOIN albums AS AL ON T.AlbumId = AL.AlbumId
+  JOIN artists AS AR ON AL.ArtistId = AR.ArtistId
+  GROUP BY C.Country, AR.Name
+)
+SELECT
+  Country,
+  Artista,
+  Vendas
+FROM VendasArtistaPorPais
+WHERE Rank = 1
+ORDER BY Country;
+"
+resultado_artista_por_pais <- dbGetQuery(conn, query_artista_por_pais)
+print(resultado_artista_por_pais)
+```
+
+## 13. Desconexão
+
+```{r}
+dbDisconnect(conn)
+print("Conexão com o banco de dados foi fechada com sucesso.")
+```
