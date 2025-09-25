@@ -1,0 +1,1826 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.6.42">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Elisa Amorim Da Costa 277145">
+
+<title>Desafio 8</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="Desafio8_files/libs/clipboard/clipboard.min.js"></script>
+<script src="Desafio8_files/libs/quarto-html/quarto.js"></script>
+<script src="Desafio8_files/libs/quarto-html/popper.min.js"></script>
+<script src="Desafio8_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="Desafio8_files/libs/quarto-html/anchor.min.js"></script>
+<link href="Desafio8_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="Desafio8_files/libs/quarto-html/quarto-syntax-highlighting-2f5df379a58b258e96c21c0638c20c03.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="Desafio8_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="Desafio8_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="Desafio8_files/libs/bootstrap/bootstrap-1bc8a17f135ab3d594c857e9f48e611b.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+
+
+</head>
+
+<body class="fullcontent">
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Desafio 8</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Elisa Amorim Da Costa 277145 </p>
+          </div>
+  </div>
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="carregar-pacotes-e-conectar-ao-banco-de-dados" class="level2">
+<h2 class="anchored" data-anchor-id="carregar-pacotes-e-conectar-ao-banco-de-dados">Carregar Pacotes e Conectar ao Banco de Dados</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(RSQLite)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(readr)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Estabelece a conexão com o arquivo do banco de dados SQLite</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="co"># A conexão é armazenada na variável 'conn' para ser usada posteriormente</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>conn <span class="ot">&lt;-</span> <span class="fu">dbConnect</span>(RSQLite<span class="sc">::</span><span class="fu">SQLite</span>(), <span class="st">"database.sqlite3"</span>)</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"--- Início da Análise ---</span><span class="sc">\n\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>--- Início da Análise ---</code></pre>
+</div>
+</div>
+</section>
+<section id="carregar-dados-dos-csvs-para-o-banco-de-dados" class="level2">
+<h2 class="anchored" data-anchor-id="carregar-dados-dos-csvs-para-o-banco-de-dados">Carregar Dados dos CSVs para o Banco de Dados</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Carregando dados dos arquivos CSV para o banco de dados...</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Carregando dados dos arquivos CSV para o banco de dados...</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Uma lista que mapeia o nome da tabela no banco de dados para o nome do arquivo .csv</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>tabelas_para_carregar <span class="ot">&lt;-</span> <span class="fu">list</span>(</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  <span class="st">"instructors"</span> <span class="ot">=</span> <span class="st">"instructors.csv"</span>,</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  <span class="st">"teachings"</span> <span class="ot">=</span> <span class="st">"teachings.csv"</span>,</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>  <span class="st">"sections"</span> <span class="ot">=</span> <span class="st">"sections.csv"</span>,</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>  <span class="st">"course_offerings"</span> <span class="ot">=</span> <span class="st">"course_offerings.csv"</span>,</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>  <span class="st">"subject_memberships"</span> <span class="ot">=</span> <span class="st">"subject_memberships.csv"</span>,</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>  <span class="st">"subjects"</span> <span class="ot">=</span> <span class="st">"subjects.csv"</span>,</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>  <span class="st">"grade_distribution"</span> <span class="ot">=</span> <span class="st">"grade_distributions.csv"</span>,</span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>  <span class="st">"courses"</span> <span class="ot">=</span> <span class="st">"courses.csv"</span>,</span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>  <span class="st">"rooms"</span> <span class="ot">=</span> <span class="st">"rooms.csv"</span>,</span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>  <span class="st">"schedules"</span> <span class="ot">=</span> <span class="st">"schedules.csv"</span></span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a><span class="co"># Um loop 'for' que itera sobre a lista acima</span></span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (nome_tabela <span class="cf">in</span> <span class="fu">names</span>(tabelas_para_carregar)) {</span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>  ficheiro_csv <span class="ot">&lt;-</span> tabelas_para_carregar[[nome_tabela]]</span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a>  dados_csv <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(ficheiro_csv)</span>
+<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Escreve o data frame para o banco de dados SQLite</span></span>
+<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a>  <span class="co"># 'overwrite = TRUE' : gse a tabela já existir, ela será substituída</span></span>
+<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb5-26"><a href="#cb5-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">dbWriteTable</span>(conn, nome_tabela, dados_csv, <span class="at">overwrite =</span> <span class="cn">TRUE</span>, <span class="at">row.names =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb5-27"><a href="#cb5-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cat</span>(<span class="fu">paste</span>(<span class="st">"Tabela '"</span>, nome_tabela, <span class="st">"' carregada.</span><span class="sc">\n</span><span class="st">"</span>, <span class="at">sep=</span><span class="st">""</span>))</span>
+<span id="cb5-28"><a href="#cb5-28" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Tabela 'instructors' carregada.</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Tabela 'teachings' carregada.</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Tabela 'sections' carregada.</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Tabela 'course_offerings' carregada.</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Tabela 'subject_memberships' carregada.</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Tabela 'subjects' carregada.</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Tabela 'grade_distribution' carregada.</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Tabela 'courses' carregada.</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Tabela 'rooms' carregada.</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Tabela 'schedules' carregada.</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Carregamento de todas as tabelas concluído.</span><span class="sc">\n\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Carregamento de todas as tabelas concluído.</code></pre>
+</div>
+</div>
+</section>
+<section id="quem-são-e-quantos-são-os-professores-de-estatística" class="level2">
+<h2 class="anchored" data-anchor-id="quem-são-e-quantos-são-os-professores-de-estatística">Quem são e quantos são os professores de Estatística?</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"PERGUNTA 1: Quantos professores lecionaram disciplinas de Estatística?</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>PERGUNTA 1: Quantos professores lecionaram disciplinas de Estatística?</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Esta é uma consulta SQL (Query) para encontrar a resposta</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="co"># 'INNER JOIN': usado para unir várias tabelas para criar uma ligação entre 'instructors' (professores) e 'subjects' (assuntos/disciplinas)</span></span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a><span class="co"># 'COUNT(DISTINCT i.id)' é usado para contar cada professor apenas uma vez, mesmo que ele tenha lecionado várias disciplinas de estatística</span></span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>query_contagem <span class="ot">&lt;-</span> <span class="st">"</span></span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a><span class="st">SELECT COUNT(DISTINCT i.id) AS total_professores FROM instructors i</span></span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a><span class="st">INNER JOIN teachings t ON i.id = t.instructor_id</span></span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a><span class="st">INNER JOIN sections s ON t.section_uuid = s.uuid</span></span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a><span class="st">INNER JOIN course_offerings co ON s.course_offering_uuid = co.uuid</span></span>
+<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a><span class="st">INNER JOIN subject_memberships sm ON co.uuid = sm.course_offering_uuid</span></span>
+<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a><span class="st">INNER JOIN subjects sub ON sm.subject_code = sub.code</span></span>
+<span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a><span class="st">WHERE sub.abbreviation = 'STAT';"</span></span>
+<span id="cb20-13"><a href="#cb20-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-14"><a href="#cb20-14" aria-hidden="true" tabindex="-1"></a><span class="co"># 'dbGetQuery' envia a consulta para o banco de dados e retorna o resultado</span></span>
+<span id="cb20-15"><a href="#cb20-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-16"><a href="#cb20-16" aria-hidden="true" tabindex="-1"></a>total_professores <span class="ot">&lt;-</span> <span class="fu">dbGetQuery</span>(conn, query_contagem)</span>
+<span id="cb20-17"><a href="#cb20-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-18"><a href="#cb20-18" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"RESULTADO: O número total de professores de Estatística é"</span>, total_professores<span class="sc">$</span>total_professores, <span class="st">"</span><span class="sc">\n\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>RESULTADO: O número total de professores de Estatística é 379 </code></pre>
+</div>
+</div>
+</section>
+<section id="análise-de-gpa-professores-e-disciplinas" class="level2">
+<h2 class="anchored" data-anchor-id="análise-de-gpa-professores-e-disciplinas">Análise de GPA (Professores e Disciplinas)</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Para evitar cálculos repetidos, usa-se uma Common Table Expression (CTE) com o nome 'gpa_por_oferta'</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Uma CTE é como uma tabela temporária que existe apenas durante a execução da consulta</span></span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>cte_gpa_stat <span class="ot">&lt;-</span> <span class="st">"</span></span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a><span class="st">WITH gpa_por_oferta AS (</span></span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a><span class="st">  SELECT</span></span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a><span class="st">    gd.course_offering_uuid,</span></span>
+<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a><span class="st">    -- A fórmula abaixo calcula o GPA ponderado. Cada nota (A=4, B=3, etc.)</span></span>
+<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a><span class="st">    -- é multiplicada pelo número de alunos que a obtiveram.</span></span>
+<span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a><span class="st">    CAST(</span></span>
+<span id="cb22-11"><a href="#cb22-11" aria-hidden="true" tabindex="-1"></a><span class="st">      (gd.a_count * 4.0) + (gd.ab_count * 3.5) + (gd.b_count * 3.0) + (gd.bc_count * 2.5) +</span></span>
+<span id="cb22-12"><a href="#cb22-12" aria-hidden="true" tabindex="-1"></a><span class="st">      (gd.c_count * 2.0) + (gd.d_count * 1.0) + (gd.f_count * 0.0)</span></span>
+<span id="cb22-13"><a href="#cb22-13" aria-hidden="true" tabindex="-1"></a><span class="st">    AS REAL) /</span></span>
+<span id="cb22-14"><a href="#cb22-14" aria-hidden="true" tabindex="-1"></a><span class="st">    -- O resultado é dividido pelo número total de alunos para obter a média.</span></span>
+<span id="cb22-15"><a href="#cb22-15" aria-hidden="true" tabindex="-1"></a><span class="st">    -- A condição 'WHERE' no final garante que não haja divisão por zero.</span></span>
+<span id="cb22-16"><a href="#cb22-16" aria-hidden="true" tabindex="-1"></a><span class="st">    (gd.a_count + gd.ab_count + gd.b_count + gd.bc_count + gd.c_count + gd.d_count + gd.f_count) AS gpa</span></span>
+<span id="cb22-17"><a href="#cb22-17" aria-hidden="true" tabindex="-1"></a><span class="st">  FROM grade_distribution gd</span></span>
+<span id="cb22-18"><a href="#cb22-18" aria-hidden="true" tabindex="-1"></a><span class="st">  INNER JOIN subject_memberships sm ON gd.course_offering_uuid = sm.course_offering_uuid</span></span>
+<span id="cb22-19"><a href="#cb22-19" aria-hidden="true" tabindex="-1"></a><span class="st">  INNER JOIN subjects s ON sm.subject_code = s.code</span></span>
+<span id="cb22-20"><a href="#cb22-20" aria-hidden="true" tabindex="-1"></a><span class="st">  WHERE s.abbreviation = 'STAT' AND</span></span>
+<span id="cb22-21"><a href="#cb22-21" aria-hidden="true" tabindex="-1"></a><span class="st">        (gd.a_count + gd.ab_count + gd.b_count + gd.bc_count + gd.c_count + gd.d_count + gd.f_count) &gt; 0</span></span>
+<span id="cb22-22"><a href="#cb22-22" aria-hidden="true" tabindex="-1"></a><span class="st">)</span></span>
+<span id="cb22-23"><a href="#cb22-23" aria-hidden="true" tabindex="-1"></a><span class="st">"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="ranking-dos-professores-mais-difíceis-menor-gpa" class="level2">
+<h2 class="anchored" data-anchor-id="ranking-dos-professores-mais-difíceis-menor-gpa">Ranking dos professores mais difíceis (menor GPA)</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"PERGUNTA 2a: Ranking dos professores (do mais difícil para o mais fácil)</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>PERGUNTA 2a: Ranking dos professores (do mais difícil para o mais fácil)</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="co"># A consulta agrupa os dados por professor, calcula a média de GPA de todas as turmas que ele lecionou e ordena o resultado em ordem crescente ('ASC') de GPA</span></span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>query_prof_dificil <span class="ot">&lt;-</span> <span class="fu">paste</span>(cte_gpa_stat, <span class="st">"</span></span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a><span class="st">SELECT i.name, AVG(gpo.gpa) AS media_gpa FROM gpa_por_oferta gpo</span></span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a><span class="st">INNER JOIN sections s ON gpo.course_offering_uuid = s.course_offering_uuid</span></span>
+<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a><span class="st">INNER JOIN teachings t ON s.uuid = t.section_uuid</span></span>
+<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a><span class="st">INNER JOIN instructors i ON t.instructor_id = i.id</span></span>
+<span id="cb25-8"><a href="#cb25-8" aria-hidden="true" tabindex="-1"></a><span class="st">GROUP BY i.name HAVING media_gpa IS NOT NULL ORDER BY media_gpa ASC;</span></span>
+<span id="cb25-9"><a href="#cb25-9" aria-hidden="true" tabindex="-1"></a><span class="st">"</span>)</span>
+<span id="cb25-10"><a href="#cb25-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-11"><a href="#cb25-11" aria-hidden="true" tabindex="-1"></a>prof_dificil <span class="ot">&lt;-</span> <span class="fu">dbGetQuery</span>(conn, query_prof_dificil)</span>
+<span id="cb25-12"><a href="#cb25-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-13"><a href="#cb25-13" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"RESULTADO:</span><span class="sc">\n</span><span class="st">"</span>); <span class="fu">print</span>(prof_dificil)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>RESULTADO:</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                             name media_gpa
+1                  JAMES D KUELBS  2.598750
+2               JONATHON PETERSON  2.776515
+3                    XIUFENG SHAO  2.778846
+4                  ALEXANDER FISH  2.806624
+5                     KAILEI CHEN  2.808345
+6                         GINA OH  2.829212
+7              MANJUSHA KANCHARLA  2.829212
+8                MITCHELL PAUKNER  2.829212
+9                      XIAOWU DAI  2.829212
+10                    JUNGWON MUN  2.829510
+11                STEPHEN WAINGER  2.831169
+12                  SCOTT HOTTOVY  2.845013
+13              ALEXANDER KISELEV  2.846457
+14                DAVID GRIFFEATH  2.851097
+15                       HAODA FU  2.853257
+16                    BROOK LUERS  2.879431
+17               GREGORY SHINAULT  2.879627
+18                   ZHENGXIAO WU  2.879727
+19                    KYLE HERBET  2.889505
+20               MARIA KAMENETSKY  2.889505
+21                   ANATOLE BECK  2.916667
+22                        BIN DAI  2.920796
+23                   TONGHAI YANG  2.928750
+24               FLORIAN BERTRAND  2.936222
+25                  ROBERT HARRON  2.941860
+26                       BO HUANG  2.946662
+27                      JUN ZHANG  2.948128
+28                 GINA BENNINGER  2.950007
+29                     YING ZHANG  2.950291
+30                         LAM HO  2.951368
+31                     XIRAN WANG  2.953705
+32              ERICA LEE DEADMAN  2.960538
+33                         LIN QI  2.963204
+34               BEN ADAM HAALAND  2.963915
+35                ELOISA D CHAVAS  2.963915
+36                   MIN JUNG LEE  2.963915
+37            SCOTT JOSEPH HETZEL  2.963915
+38                THOMAS G. KURTZ  2.964575
+39                   RUIFANG SONG  2.971030
+40          GARY HOWARD SCHROEDER  2.972139
+41                      CHEN JING  2.975522
+42                       XIWEN MA  2.977989
+43                JENNIFER NGUYEN  2.981764
+44                       XIAO NIE  2.982129
+45                  STEFFEN LEMPP  2.982948
+46          HEATHER MARIE BRAZEAU  2.987785
+47                    PHILIP WOOD  2.991361
+48                     VICTOR LUO  2.992599
+49                  MIHAELA IFRIM  2.994867
+50                 SONA Z SWANSON  2.995804
+51             IAN BRANSTAD RILEY  2.998924
+52                   STEPHEN BERG  3.000759
+53         GREGORIO MORENO-FLORES  3.006926
+54              SUKHENDU MEHROTRA  3.006926
+55                 DAVID ANDERSON  3.007687
+56                ALBERTO DEL PIA  3.008475
+57                      HUILIN HU  3.008475
+58                     YUAN JIANG  3.010278
+59                      YALI WANG  3.010747
+60               SAMUEL STECHMANN  3.011409
+61                 MICHAEL FERRIS  3.013265
+62                     YUANZHI LI  3.013867
+63                    YUCHEN ZHOU  3.015731
+64                       DONG XIA  3.019202
+65                      TAERI UHM  3.019504
+66                          XU HE  3.030121
+67                  KUNLING HUANG  3.030852
+68              RICHARD A BRUALDI  3.031250
+69                        GENG LI  3.031697
+70                    YUJIN CHUNG  3.031870
+71                      LONG PHAN  3.032653
+72                   WAI TONG FAN  3.037341
+73          JASON RICHARD SWANSON  3.037567
+74                      CHENXI LI  3.038674
+75                        TIEN VO  3.041164
+76                  ARNOLD MILLER  3.041521
+77                VARSHA KULKARNI  3.042199
+78                     XINYU SONG  3.044683
+79           MICHAEL GEORGE ILTIS  3.046525
+80                   SANGBUM CHOI  3.049892
+81                    ZHONGJIE YU  3.051449
+82                   WESLEY CHANG  3.051553
+83                  KEVIN PACKARD  3.053309
+84                 LANCINE KONATE  3.056818
+85                 GUN WOONG PARK  3.062425
+86                     SHIXUE LIU  3.062475
+87            DIETRICH UHLENBROCK  3.062500
+88                    LEV BORISOV  3.062500
+89        NICHOLAS STEPHEN KEULER  3.063624
+90                     SHENG WANG  3.067008
+91                 YOUNG MIN PARK  3.069966
+92                      YIFAN MEI  3.070067
+93                     STEVEN SAM  3.071429
+94                  ANDREW LESLIE  3.072120
+95            DANIELE CAPPELLETTI  3.072535
+96                   BINGYING XIE  3.073960
+97                    YONGFENG WU  3.076751
+98                      CUIZE HAN  3.077179
+99                      YUAN WANG  3.078424
+100                   HAOYANG FAN  3.081805
+101            PAUL M TERWILLIGER  3.082121
+102         JOHN WILTSHIRE-GORDON  3.082207
+103                      RUI CHEN  3.082593
+104                    RUIFENG XU  3.084936
+105                     JEEA CHOI  3.086289
+106            RICHARD A. JOHNSON  3.086767
+107                  SHIZHEN WANG  3.086901
+108                  DEYUAN JIANG  3.090588
+109                   SEULKEE YUN  3.094185
+110                  CRYSTAL CHEN  3.095842
+111                 ANDREJ ZLATOS  3.095877
+112                  DONGHYUN LEE  3.095877
+113                     SEHO PARK  3.096566
+114                    YU QIU LIU  3.096809
+115                  HUIKUN ZHANG  3.096972
+116                   JINGCI MENG  3.101283
+117                    CHEN CHENG  3.102190
+118                 ISMOR FISCHER  3.103061
+119                       SHI JIN  3.104167
+120                      LUXI CAO  3.104769
+121              TIMO SEPPALAINEN  3.105690
+122                     FANG FANG  3.110370
+123           ALEXANDER COVINGTON  3.111639
+124                   PERLA REYES  3.111961
+125                        XIN LI  3.113253
+126                STEPHEN WRIGHT  3.114188
+127                       MIN NIU  3.117976
+128                    YAOGUO XIE  3.118258
+129               YOUNGDEOK HWANG  3.119397
+130                CHIEN-WEI CHEN  3.120651
+131                    JUNHEE HAN  3.122777
+132                   KYLE HEBERT  3.123311
+133                      BOWEN HU  3.124625
+134                   JARED BROWN  3.125739
+135                 DONALD PORTER  3.125820
+136                    JU HEE CHO  3.126176
+137                 SEUNGBONG HAN  3.127089
+138                    DUY NGUYEN  3.127230
+139                   QIONG ZHANG  3.127695
+140                KRISTEN CYFFKA  3.129051
+141                    XIPEI YANG  3.129603
+142                   CHANHAN HSU  3.131195
+143                   TING-LI LIN  3.131207
+144                 ZUOFENG SHANG  3.131835
+145              DOUGLAS M. BATES  3.132054
+146                     QUOC TRAN  3.132478
+147                 TIMOTHY IDOWU  3.134587
+148                  KAM-WAH TSUI  3.135666
+149                    ALAN HUANG  3.135890
+150                        THU LE  3.135890
+151                  CHENLIANG XU  3.137928
+152                      HAO TENG  3.138909
+153                   ZIFENG ZHAO  3.139562
+154                    JINGLAN LI  3.139864
+155                   BI CHENG WU  3.141444
+156                   RONGJUN ZHU  3.141444
+157                    YUNONG LIN  3.141444
+158                SEBASTIEN ROCH  3.143769
+159               CHENGNING ZHANG  3.143824
+160                 BENEDEK VALKO  3.144103
+161                      LILUN DU  3.151753
+162                    JOHN DAVIS  3.154961
+163                     MENG SONG  3.155272
+164                AKICHIKA OZEKI  3.156774
+165                 MICHAEL HOGAN  3.158610
+166               NELLIE LAUGHLIN  3.158610
+167  KRISHNAKUMAR BALASUBRAMANIAN  3.161415
+168                       TRAM TA  3.161932
+169                       JIE WEI  3.165379
+170                     XINJIE HE  3.165379
+171                   XUEYAO CHEN  3.165379
+172                   SHENG ZHANG  3.166985
+173                   ZHIGUO XIAO  3.168129
+174                  YONGJOON KIM  3.170750
+175                       JIAN WU  3.172156
+176                      XUN ZHAO  3.172156
+177                         YI LI  3.174638
+178                    YUCHANG WU  3.175851
+179                    TUN LEE NG  3.175885
+180                ROBERT WARDROP  3.176172
+181                      JIALE XU  3.177288
+182                     WEI ZHENG  3.178521
+183                   YILIN ZHANG  3.179882
+184                  SHANE HUBLER  3.180855
+185                       LU YANG  3.182515
+186                      MING XIE  3.183949
+187                     YAOYAO XU  3.184198
+188                     JIE ZHANG  3.184266
+189                SOHEIL SADEGHI  3.184912
+190                 AUGUST JENSEN  3.186477
+191                     BIN ZHANG  3.186818
+192                   XINWEI DENG  3.188123
+193                       JUN YIN  3.190211
+194                        YI LIU  3.190216
+195                       BIN ZHU  3.191236
+196                   MINJING TAO  3.192533
+197                      RUI TANG  3.192670
+198                  WENWEN ZHANG  3.194143
+199                     YOURAN QI  3.197223
+200                       QI TANG  3.198726
+201                  CLAIRE BOBST  3.198790
+202                     CHAN PARK  3.198790
+203                   RUNGANG HAN  3.198790
+204                     SEAN KENT  3.198790
+205               COLIN LONGHURST  3.202127
+206                JINGJIANG PENG  3.204333
+207                      HAN CHEN  3.204471
+208                      SHANG WU  3.205246
+209                   HYEBIN SONG  3.207425
+210                     JOHN KANE  3.208955
+211                    MARIA ROJO  3.211143
+212                      YAN CHEN  3.211756
+213                      FAN YANG  3.213706
+214               FREDERICK BOEHM  3.214150
+215                     YANG ZHAO  3.214661
+216               KATHERINE GOODE  3.214854
+217                      HAO ZHOU  3.216016
+218            NICHOLAS HENDERSON  3.218392
+219                   CHAOYANG YU  3.218851
+220                     XIN ZHANG  3.218986
+221                      HAO CHEN  3.219028
+222                    MUHONG GAO  3.219432
+223                   PEIGEN ZHOU  3.219780
+224              GONZALO CONTADOR  3.220789
+225                        TAO YU  3.222944
+226               KAZUHIKO SHINKI  3.226305
+227               MICHAEL KUTZLER  3.227701
+228                       FAN GAO  3.230484
+229                   JIAJIE CHEN  3.232079
+230                  JIANCHANG HU  3.233581
+231                 CHELSEY GREEN  3.234988
+232                CHIA-CHIEH LIN  3.235165
+233                    WENZHI CAO  3.237211
+234                    SOKOL VAKO  3.238013
+235           CLAUDIA SOLIS LEMUS  3.238985
+236                        JUN LI  3.241528
+237                     HAO ZHENG  3.242036
+238                     RUOSI GUO  3.242110
+239                   SHULEI WANG  3.242617
+240                  REBECCA POST  3.245172
+241                       YI CHAI  3.246143
+242                  DEREK NORTON  3.246591
+243              KEEGAN KORTHAUER  3.246591
+244                ROBERT R MEYER  3.250000
+245                     SIJING LI  3.255120
+246                    DEBRAJ DAS  3.256619
+247                    QUEFENG LI  3.257292
+248               ABIGAIL BENZINE  3.259891
+249                         XU XU  3.260706
+250                   BRET HANLON  3.261007
+251                   QIURONG CUI  3.261957
+252                    ANRU ZHANG  3.263386
+253                      XIAO GUO  3.268782
+254                       TONG LI  3.273505
+255                   DONGGYU KIM  3.274206
+256                      HUI WANG  3.286842
+257            KEVIN HASEGAWA ENG  3.286842
+258                   XIAODAN WEI  3.286842
+259              PAUL SAVARIAPPAN  3.295253
+260                     YUQING XU  3.296830
+261                    LILI ZHENG  3.296835
+262            VICTORIA MANSFIELD  3.298793
+263                   LUWAN ZHANG  3.302315
+264                    YANNAN QIU  3.303571
+265                    JIWEI ZHAO  3.306842
+266                 JOSEP GINEBRA  3.310328
+267                     ZHUANG WU  3.312176
+268               TZU HSIANG HUNG  3.315428
+269                    YONGSU LEE  3.316044
+270                     LIE XIONG  3.317622
+271                     JILI WANG  3.317977
+272                 XIAOPING FENG  3.318434
+273              GARVESH RASKUTTI  3.319266
+274                      XIUYU MA  3.322746
+275               MATTHEW BALLARD  3.325581
+276                     XINXIN YU  3.325765
+277                BENJAMIN RECHT  3.330618
+278                     SHUYUN YE  3.331709
+279                       BO YANG  3.334041
+280                    DUZHE WANG  3.336602
+281                      JIE SONG  3.336770
+282                       LAN LUO  3.341579
+283                      RYAN ZEA  3.347095
+284            NORBERT BINKIEWICZ  3.353447
+285                    XIAOMAO LI  3.361319
+286                BEHZAD AALIPUR  3.365720
+287                ALBRECHT KLEMM  3.368421
+288                     SONG WANG  3.372888
+289                        LEI XU  3.378728
+290                    DEREK BEAN  3.386328
+291                   SHENGJI JIA  3.387091
+292                ALYSSA DIGILIO  3.389795
+293                       KEN ONO  3.393742
+294                 LIAM JOHNSTON  3.393910
+295               CHENSHENG KUANG  3.397811
+296                       TING YE  3.407432
+297                      NING FAN  3.409989
+298                   YAZHEN WANG  3.411371
+299                       QING LI  3.421575
+300                     KARL ROHE  3.429018
+301                   WEI-YIN LOH  3.441321
+302            ROBERT WAYNE GREEN  3.454167
+303                HYUNSEUNG KANG  3.456140
+304                      ANQI SHI  3.459885
+305                    CECILE ANE  3.472430
+306                    MARI PALTA  3.473684
+307                    SHUAI CHEN  3.473684
+308     BEHZAD AALIPUR HAFSHEJANI  3.475000
+309           JESSE THOMAS HOLZER  3.478261
+310                  SUNDUZ KELES  3.491439
+311                     CUICUI QI  3.491995
+312                     COLE COOK  3.509529
+313                  ZHIGENG GENG  3.512411
+314 GUILHERME VIEIRA NUNES LUDWIG  3.516654
+315                 ANNE BRUCKNER  3.516667
+316                      QI JIANG  3.517719
+317                  EDWARD ERKER  3.517980
+318                   BRET LARGET  3.521318
+319                 ERIK NORDHEIM  3.526813
+320             JENNIFER BIRSTLER  3.529323
+321                ZHENGJUN ZHANG  3.531262
+322                RONALD GANGNON  3.532353
+323                     YOUNG LEE  3.533655
+324        STEPHEN AARON STANHOPE  3.554733
+325                  JEE YEON KIM  3.571429
+326            CHRISTOPHER WAGNER  3.573529
+327                  SHUANG HUANG  3.574468
+328                   GUANNAN SUN  3.579254
+329                      LILI LAN  3.579727
+330                 QIAN ZHIGUANG  3.583467
+331                MURRAY CLAYTON  3.594354
+332                  JOHN GILLETT  3.605526
+333                  KJELL DOKSUM  3.609227
+334                 KYUNGMANN KIM  3.612258
+335                   SIJIAN WANG  3.613318
+336                JAMES ANDERSON  3.615385
+337                     ZIJIAN NI  3.615741
+338                ZHANG CHUNMING  3.617905
+339                       JUN ZHU  3.618937
+340                   THOMAS COOK  3.627118
+341                     JUNHO LEE  3.642857
+342                  HUAIBAO FENG  3.644737
+343               MICHELLE HARRIS  3.647374
+344                MARY LINDSTROM  3.661405
+345                       YUAN LI  3.671209
+346                 NORMAN DRAPER  3.680000
+347                   MOO K CHUNG  3.681818
+348       THEVAASIINEN CHANDERENG  3.692064
+349                 YANBING ZHENG  3.692308
+350                  PAUL RATHOUZ  3.695175
+351                      JUN SHAO  3.695449
+352                  JASON P FINE  3.718750
+353                JOSEPH DEUTSCH  3.722976
+354      CHRISTINA M. KENDZIORSKI  3.725000
+355          ADIN-CRISTIAN ANDREI  3.749432
+356                   KARL BROMAN  3.761584
+357           RICHARD J. CHAPPELL  3.765269
+358                REBECCA KOSCIK  3.772160
+359                 FANGFANG WANG  3.773396
+360                       SHAN LU  3.775413
+361                MICHAEL NEWTON  3.789922
+362                 BRIAN YANDELL  3.799402
+363                  MICHAEL LIOU  3.813559
+364                  DAVID DEMETS  3.833333
+365                        LU MAO  3.910283
+366                     MING YUAN  3.924561
+367                   CHAOQUN MEI  3.937853
+368                   YU MENGGANG  3.939200
+369                   GRACE WAHBA  3.972642
+370                  GUANHUA CHEN  4.000000
+371  SRIKANTHMADHAVAN ARAVAMUTHAN  4.000000
+372                     YAJUAN SI  4.000000</code></pre>
+</div>
+</div>
+</section>
+<section id="ranking-dos-professores-mais-fáceis-maior-gpa" class="level2">
+<h2 class="anchored" data-anchor-id="ranking-dos-professores-mais-fáceis-maior-gpa">Ranking dos professores mais fáceis (maior GPA)</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"</span><span class="sc">\n</span><span class="st">PERGUNTA 2b: Ranking dos professores (do mais fácil para o mais difícil)</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+PERGUNTA 2b: Ranking dos professores (do mais fácil para o mais difícil)</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>query_prof_facil <span class="ot">&lt;-</span> <span class="fu">paste</span>(cte_gpa_stat, <span class="st">"</span></span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a><span class="st">SELECT i.name, AVG(gpo.gpa) AS media_gpa FROM gpa_por_oferta gpo</span></span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a><span class="st">INNER JOIN sections s ON gpo.course_offering_uuid = s.course_offering_uuid</span></span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a><span class="st">INNER JOIN teachings t ON s.uuid = t.section_uuid</span></span>
+<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a><span class="st">INNER JOIN instructors i ON t.instructor_id = i.id</span></span>
+<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a><span class="st">GROUP BY i.name HAVING media_gpa IS NOT NULL ORDER BY media_gpa DESC;</span></span>
+<span id="cb30-7"><a href="#cb30-7" aria-hidden="true" tabindex="-1"></a><span class="st">"</span>)</span>
+<span id="cb30-8"><a href="#cb30-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-9"><a href="#cb30-9" aria-hidden="true" tabindex="-1"></a>prof_facil <span class="ot">&lt;-</span> <span class="fu">dbGetQuery</span>(conn, query_prof_facil)</span>
+<span id="cb30-10"><a href="#cb30-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-11"><a href="#cb30-11" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"RESULTADO:</span><span class="sc">\n</span><span class="st">"</span>); <span class="fu">print</span>(prof_facil)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>RESULTADO:</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                             name media_gpa
+1                       YAJUAN SI  4.000000
+2    SRIKANTHMADHAVAN ARAVAMUTHAN  4.000000
+3                    GUANHUA CHEN  4.000000
+4                     GRACE WAHBA  3.972642
+5                     YU MENGGANG  3.939200
+6                     CHAOQUN MEI  3.937853
+7                       MING YUAN  3.924561
+8                          LU MAO  3.910283
+9                    DAVID DEMETS  3.833333
+10                   MICHAEL LIOU  3.813559
+11                  BRIAN YANDELL  3.799402
+12                 MICHAEL NEWTON  3.789922
+13                        SHAN LU  3.775413
+14                  FANGFANG WANG  3.773396
+15                 REBECCA KOSCIK  3.772160
+16            RICHARD J. CHAPPELL  3.765269
+17                    KARL BROMAN  3.761584
+18           ADIN-CRISTIAN ANDREI  3.749432
+19       CHRISTINA M. KENDZIORSKI  3.725000
+20                 JOSEPH DEUTSCH  3.722976
+21                   JASON P FINE  3.718750
+22                       JUN SHAO  3.695449
+23                   PAUL RATHOUZ  3.695175
+24                  YANBING ZHENG  3.692308
+25        THEVAASIINEN CHANDERENG  3.692064
+26                    MOO K CHUNG  3.681818
+27                  NORMAN DRAPER  3.680000
+28                        YUAN LI  3.671209
+29                 MARY LINDSTROM  3.661405
+30                MICHELLE HARRIS  3.647374
+31                   HUAIBAO FENG  3.644737
+32                      JUNHO LEE  3.642857
+33                    THOMAS COOK  3.627118
+34                        JUN ZHU  3.618937
+35                 ZHANG CHUNMING  3.617905
+36                      ZIJIAN NI  3.615741
+37                 JAMES ANDERSON  3.615385
+38                    SIJIAN WANG  3.613318
+39                  KYUNGMANN KIM  3.612258
+40                   KJELL DOKSUM  3.609227
+41                   JOHN GILLETT  3.605526
+42                 MURRAY CLAYTON  3.594354
+43                  QIAN ZHIGUANG  3.583467
+44                       LILI LAN  3.579727
+45                    GUANNAN SUN  3.579254
+46                   SHUANG HUANG  3.574468
+47             CHRISTOPHER WAGNER  3.573529
+48                   JEE YEON KIM  3.571429
+49         STEPHEN AARON STANHOPE  3.554733
+50                      YOUNG LEE  3.533655
+51                 RONALD GANGNON  3.532353
+52                 ZHENGJUN ZHANG  3.531262
+53              JENNIFER BIRSTLER  3.529323
+54                  ERIK NORDHEIM  3.526813
+55                    BRET LARGET  3.521318
+56                   EDWARD ERKER  3.517980
+57                       QI JIANG  3.517719
+58                  ANNE BRUCKNER  3.516667
+59  GUILHERME VIEIRA NUNES LUDWIG  3.516654
+60                   ZHIGENG GENG  3.512411
+61                      COLE COOK  3.509529
+62                      CUICUI QI  3.491995
+63                   SUNDUZ KELES  3.491439
+64            JESSE THOMAS HOLZER  3.478261
+65      BEHZAD AALIPUR HAFSHEJANI  3.475000
+66                     SHUAI CHEN  3.473684
+67                     MARI PALTA  3.473684
+68                     CECILE ANE  3.472430
+69                       ANQI SHI  3.459885
+70                 HYUNSEUNG KANG  3.456140
+71             ROBERT WAYNE GREEN  3.454167
+72                    WEI-YIN LOH  3.441321
+73                      KARL ROHE  3.429018
+74                        QING LI  3.421575
+75                    YAZHEN WANG  3.411371
+76                       NING FAN  3.409989
+77                        TING YE  3.407432
+78                CHENSHENG KUANG  3.397811
+79                  LIAM JOHNSTON  3.393910
+80                        KEN ONO  3.393742
+81                 ALYSSA DIGILIO  3.389795
+82                    SHENGJI JIA  3.387091
+83                     DEREK BEAN  3.386328
+84                         LEI XU  3.378728
+85                      SONG WANG  3.372888
+86                 ALBRECHT KLEMM  3.368421
+87                 BEHZAD AALIPUR  3.365720
+88                     XIAOMAO LI  3.361319
+89             NORBERT BINKIEWICZ  3.353447
+90                       RYAN ZEA  3.347095
+91                        LAN LUO  3.341579
+92                       JIE SONG  3.336770
+93                     DUZHE WANG  3.336602
+94                        BO YANG  3.334041
+95                      SHUYUN YE  3.331709
+96                 BENJAMIN RECHT  3.330618
+97                      XINXIN YU  3.325765
+98                MATTHEW BALLARD  3.325581
+99                       XIUYU MA  3.322746
+100              GARVESH RASKUTTI  3.319266
+101                 XIAOPING FENG  3.318434
+102                     JILI WANG  3.317977
+103                     LIE XIONG  3.317622
+104                    YONGSU LEE  3.316044
+105               TZU HSIANG HUNG  3.315428
+106                     ZHUANG WU  3.312176
+107                 JOSEP GINEBRA  3.310328
+108                    JIWEI ZHAO  3.306842
+109                    YANNAN QIU  3.303571
+110                   LUWAN ZHANG  3.302315
+111            VICTORIA MANSFIELD  3.298793
+112                    LILI ZHENG  3.296835
+113                     YUQING XU  3.296830
+114              PAUL SAVARIAPPAN  3.295253
+115                   XIAODAN WEI  3.286842
+116            KEVIN HASEGAWA ENG  3.286842
+117                      HUI WANG  3.286842
+118                   DONGGYU KIM  3.274206
+119                       TONG LI  3.273505
+120                      XIAO GUO  3.268782
+121                    ANRU ZHANG  3.263386
+122                   QIURONG CUI  3.261957
+123                   BRET HANLON  3.261007
+124                         XU XU  3.260706
+125               ABIGAIL BENZINE  3.259891
+126                    QUEFENG LI  3.257292
+127                    DEBRAJ DAS  3.256619
+128                     SIJING LI  3.255120
+129                ROBERT R MEYER  3.250000
+130              KEEGAN KORTHAUER  3.246591
+131                  DEREK NORTON  3.246591
+132                       YI CHAI  3.246143
+133                  REBECCA POST  3.245172
+134                   SHULEI WANG  3.242617
+135                     RUOSI GUO  3.242110
+136                     HAO ZHENG  3.242036
+137                        JUN LI  3.241528
+138           CLAUDIA SOLIS LEMUS  3.238985
+139                    SOKOL VAKO  3.238013
+140                    WENZHI CAO  3.237211
+141                CHIA-CHIEH LIN  3.235165
+142                 CHELSEY GREEN  3.234988
+143                  JIANCHANG HU  3.233581
+144                   JIAJIE CHEN  3.232079
+145                       FAN GAO  3.230484
+146               MICHAEL KUTZLER  3.227701
+147               KAZUHIKO SHINKI  3.226305
+148                        TAO YU  3.222944
+149              GONZALO CONTADOR  3.220789
+150                   PEIGEN ZHOU  3.219780
+151                    MUHONG GAO  3.219432
+152                      HAO CHEN  3.219028
+153                     XIN ZHANG  3.218986
+154                   CHAOYANG YU  3.218851
+155            NICHOLAS HENDERSON  3.218392
+156                      HAO ZHOU  3.216016
+157               KATHERINE GOODE  3.214854
+158                     YANG ZHAO  3.214661
+159               FREDERICK BOEHM  3.214150
+160                      FAN YANG  3.213706
+161                      YAN CHEN  3.211756
+162                    MARIA ROJO  3.211143
+163                     JOHN KANE  3.208955
+164                   HYEBIN SONG  3.207425
+165                      SHANG WU  3.205246
+166                      HAN CHEN  3.204471
+167                JINGJIANG PENG  3.204333
+168               COLIN LONGHURST  3.202127
+169                     SEAN KENT  3.198790
+170                   RUNGANG HAN  3.198790
+171                     CHAN PARK  3.198790
+172                  CLAIRE BOBST  3.198790
+173                       QI TANG  3.198726
+174                     YOURAN QI  3.197223
+175                  WENWEN ZHANG  3.194143
+176                      RUI TANG  3.192670
+177                   MINJING TAO  3.192533
+178                       BIN ZHU  3.191236
+179                        YI LIU  3.190216
+180                       JUN YIN  3.190211
+181                   XINWEI DENG  3.188123
+182                     BIN ZHANG  3.186818
+183                 AUGUST JENSEN  3.186477
+184                SOHEIL SADEGHI  3.184912
+185                     JIE ZHANG  3.184266
+186                     YAOYAO XU  3.184198
+187                      MING XIE  3.183949
+188                       LU YANG  3.182515
+189                  SHANE HUBLER  3.180855
+190                   YILIN ZHANG  3.179882
+191                     WEI ZHENG  3.178521
+192                      JIALE XU  3.177288
+193                ROBERT WARDROP  3.176172
+194                    TUN LEE NG  3.175885
+195                    YUCHANG WU  3.175851
+196                         YI LI  3.174638
+197                      XUN ZHAO  3.172156
+198                       JIAN WU  3.172156
+199                  YONGJOON KIM  3.170750
+200                   ZHIGUO XIAO  3.168129
+201                   SHENG ZHANG  3.166985
+202                   XUEYAO CHEN  3.165379
+203                     XINJIE HE  3.165379
+204                       JIE WEI  3.165379
+205                       TRAM TA  3.161932
+206  KRISHNAKUMAR BALASUBRAMANIAN  3.161415
+207               NELLIE LAUGHLIN  3.158610
+208                 MICHAEL HOGAN  3.158610
+209                AKICHIKA OZEKI  3.156774
+210                     MENG SONG  3.155272
+211                    JOHN DAVIS  3.154961
+212                      LILUN DU  3.151753
+213                 BENEDEK VALKO  3.144103
+214               CHENGNING ZHANG  3.143824
+215                SEBASTIEN ROCH  3.143769
+216                    YUNONG LIN  3.141444
+217                   RONGJUN ZHU  3.141444
+218                   BI CHENG WU  3.141444
+219                    JINGLAN LI  3.139864
+220                   ZIFENG ZHAO  3.139562
+221                      HAO TENG  3.138909
+222                  CHENLIANG XU  3.137928
+223                        THU LE  3.135890
+224                    ALAN HUANG  3.135890
+225                  KAM-WAH TSUI  3.135666
+226                 TIMOTHY IDOWU  3.134587
+227                     QUOC TRAN  3.132478
+228              DOUGLAS M. BATES  3.132054
+229                 ZUOFENG SHANG  3.131835
+230                   TING-LI LIN  3.131207
+231                   CHANHAN HSU  3.131195
+232                    XIPEI YANG  3.129603
+233                KRISTEN CYFFKA  3.129051
+234                   QIONG ZHANG  3.127695
+235                    DUY NGUYEN  3.127230
+236                 SEUNGBONG HAN  3.127089
+237                    JU HEE CHO  3.126176
+238                 DONALD PORTER  3.125820
+239                   JARED BROWN  3.125739
+240                      BOWEN HU  3.124625
+241                   KYLE HEBERT  3.123311
+242                    JUNHEE HAN  3.122777
+243                CHIEN-WEI CHEN  3.120651
+244               YOUNGDEOK HWANG  3.119397
+245                    YAOGUO XIE  3.118258
+246                       MIN NIU  3.117976
+247                STEPHEN WRIGHT  3.114188
+248                        XIN LI  3.113253
+249                   PERLA REYES  3.111961
+250           ALEXANDER COVINGTON  3.111639
+251                     FANG FANG  3.110370
+252              TIMO SEPPALAINEN  3.105690
+253                      LUXI CAO  3.104769
+254                       SHI JIN  3.104167
+255                 ISMOR FISCHER  3.103061
+256                    CHEN CHENG  3.102190
+257                   JINGCI MENG  3.101283
+258                  HUIKUN ZHANG  3.096972
+259                    YU QIU LIU  3.096809
+260                     SEHO PARK  3.096566
+261                  DONGHYUN LEE  3.095877
+262                 ANDREJ ZLATOS  3.095877
+263                  CRYSTAL CHEN  3.095842
+264                   SEULKEE YUN  3.094185
+265                  DEYUAN JIANG  3.090588
+266                  SHIZHEN WANG  3.086901
+267            RICHARD A. JOHNSON  3.086767
+268                     JEEA CHOI  3.086289
+269                    RUIFENG XU  3.084936
+270                      RUI CHEN  3.082593
+271         JOHN WILTSHIRE-GORDON  3.082207
+272            PAUL M TERWILLIGER  3.082121
+273                   HAOYANG FAN  3.081805
+274                     YUAN WANG  3.078424
+275                     CUIZE HAN  3.077179
+276                   YONGFENG WU  3.076751
+277                  BINGYING XIE  3.073960
+278           DANIELE CAPPELLETTI  3.072535
+279                 ANDREW LESLIE  3.072120
+280                    STEVEN SAM  3.071429
+281                     YIFAN MEI  3.070067
+282                YOUNG MIN PARK  3.069966
+283                    SHENG WANG  3.067008
+284       NICHOLAS STEPHEN KEULER  3.063624
+285                   LEV BORISOV  3.062500
+286           DIETRICH UHLENBROCK  3.062500
+287                    SHIXUE LIU  3.062475
+288                GUN WOONG PARK  3.062425
+289                LANCINE KONATE  3.056818
+290                 KEVIN PACKARD  3.053309
+291                  WESLEY CHANG  3.051553
+292                   ZHONGJIE YU  3.051449
+293                  SANGBUM CHOI  3.049892
+294          MICHAEL GEORGE ILTIS  3.046525
+295                    XINYU SONG  3.044683
+296               VARSHA KULKARNI  3.042199
+297                 ARNOLD MILLER  3.041521
+298                       TIEN VO  3.041164
+299                     CHENXI LI  3.038674
+300         JASON RICHARD SWANSON  3.037567
+301                  WAI TONG FAN  3.037341
+302                     LONG PHAN  3.032653
+303                   YUJIN CHUNG  3.031870
+304                       GENG LI  3.031697
+305             RICHARD A BRUALDI  3.031250
+306                 KUNLING HUANG  3.030852
+307                         XU HE  3.030121
+308                     TAERI UHM  3.019504
+309                      DONG XIA  3.019202
+310                   YUCHEN ZHOU  3.015731
+311                    YUANZHI LI  3.013867
+312                MICHAEL FERRIS  3.013265
+313              SAMUEL STECHMANN  3.011409
+314                     YALI WANG  3.010747
+315                    YUAN JIANG  3.010278
+316                     HUILIN HU  3.008475
+317               ALBERTO DEL PIA  3.008475
+318                DAVID ANDERSON  3.007687
+319             SUKHENDU MEHROTRA  3.006926
+320        GREGORIO MORENO-FLORES  3.006926
+321                  STEPHEN BERG  3.000759
+322            IAN BRANSTAD RILEY  2.998924
+323                SONA Z SWANSON  2.995804
+324                 MIHAELA IFRIM  2.994867
+325                    VICTOR LUO  2.992599
+326                   PHILIP WOOD  2.991361
+327         HEATHER MARIE BRAZEAU  2.987785
+328                 STEFFEN LEMPP  2.982948
+329                      XIAO NIE  2.982129
+330               JENNIFER NGUYEN  2.981764
+331                      XIWEN MA  2.977989
+332                     CHEN JING  2.975522
+333         GARY HOWARD SCHROEDER  2.972139
+334                  RUIFANG SONG  2.971030
+335               THOMAS G. KURTZ  2.964575
+336           SCOTT JOSEPH HETZEL  2.963915
+337                  MIN JUNG LEE  2.963915
+338               ELOISA D CHAVAS  2.963915
+339              BEN ADAM HAALAND  2.963915
+340                        LIN QI  2.963204
+341             ERICA LEE DEADMAN  2.960538
+342                    XIRAN WANG  2.953705
+343                        LAM HO  2.951368
+344                    YING ZHANG  2.950291
+345                GINA BENNINGER  2.950007
+346                     JUN ZHANG  2.948128
+347                      BO HUANG  2.946662
+348                 ROBERT HARRON  2.941860
+349              FLORIAN BERTRAND  2.936222
+350                  TONGHAI YANG  2.928750
+351                       BIN DAI  2.920796
+352                  ANATOLE BECK  2.916667
+353              MARIA KAMENETSKY  2.889505
+354                   KYLE HERBET  2.889505
+355                  ZHENGXIAO WU  2.879727
+356              GREGORY SHINAULT  2.879627
+357                   BROOK LUERS  2.879431
+358                      HAODA FU  2.853257
+359               DAVID GRIFFEATH  2.851097
+360             ALEXANDER KISELEV  2.846457
+361                 SCOTT HOTTOVY  2.845013
+362               STEPHEN WAINGER  2.831169
+363                   JUNGWON MUN  2.829510
+364                    XIAOWU DAI  2.829212
+365              MITCHELL PAUKNER  2.829212
+366            MANJUSHA KANCHARLA  2.829212
+367                       GINA OH  2.829212
+368                   KAILEI CHEN  2.808345
+369                ALEXANDER FISH  2.806624
+370                  XIUFENG SHAO  2.778846
+371             JONATHON PETERSON  2.776515
+372                JAMES D KUELBS  2.598750</code></pre>
+</div>
+</div>
+</section>
+<section id="ranking-das-disciplinas-mais-difíceis-menor-gpa" class="level2">
+<h2 class="anchored" data-anchor-id="ranking-das-disciplinas-mais-difíceis-menor-gpa">Ranking das disciplinas mais difíceis (menor GPA)</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"</span><span class="sc">\n</span><span class="st">PERGUNTA 2c: Ranking das disciplinas (da mais difícil para a mais fácil)</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+PERGUNTA 2c: Ranking das disciplinas (da mais difícil para a mais fácil)</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Agrupa por disciplina (nome e número), calcula o GPA médio e ordena de forma crescente</span></span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a>query_disc_dificil <span class="ot">&lt;-</span> <span class="fu">paste</span>(cte_gpa_stat, <span class="st">"</span></span>
+<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a><span class="st">SELECT c.name, c.number, AVG(gpo.gpa) as media_gpa FROM gpa_por_oferta gpo</span></span>
+<span id="cb35-5"><a href="#cb35-5" aria-hidden="true" tabindex="-1"></a><span class="st">INNER JOIN course_offerings co ON gpo.course_offering_uuid = co.uuid</span></span>
+<span id="cb35-6"><a href="#cb35-6" aria-hidden="true" tabindex="-1"></a><span class="st">INNER JOIN courses c ON co.course_uuid = c.uuid</span></span>
+<span id="cb35-7"><a href="#cb35-7" aria-hidden="true" tabindex="-1"></a><span class="st">GROUP BY c.name, c.number HAVING media_gpa IS NOT NULL ORDER BY media_gpa ASC;</span></span>
+<span id="cb35-8"><a href="#cb35-8" aria-hidden="true" tabindex="-1"></a><span class="st">"</span>)</span>
+<span id="cb35-9"><a href="#cb35-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-10"><a href="#cb35-10" aria-hidden="true" tabindex="-1"></a>disc_dificil <span class="ot">&lt;-</span> <span class="fu">dbGetQuery</span>(conn, query_disc_dificil)</span>
+<span id="cb35-11"><a href="#cb35-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-12"><a href="#cb35-12" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"RESULTADO:</span><span class="sc">\n</span><span class="st">"</span>); <span class="fu">print</span>(disc_dificil)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>RESULTADO:</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                                                               name number
+1                         Introduction to the Theory of Probability    431
+2                                        Linear Programming Methods    525
+3         Introduction to Probability and Mathematical Statistics I    309
+4                             Introductory Statistics for Engineers    224
+5                              Introduction to Stochastic Processes    632
+6                               Introduction to Statistical Methods    301
+7        Introduction to Probability and Mathematical Statistics II    310
+8                                     Introduction to Combinatorics    475
+9   Introduction to Theory and Methods of Mathematical Statistics I    311
+10                    Introductory Applied Statistics for Engineers    324
+11              An Introduction to Sample Survey Theory and Methods    411
+12            Introductory Applied Statistics for the Life Sciences    371
+13                  Accelerated Introduction to Statistical Methods    302
+14                                      Applied Regression Analysis    333
+15                                Applied Categorical Data Analysis    421
+16 Introduction to Theory and Methods of Mathematical Statistics II    312
+17                                      Introduction to Time Series    349
+18                                  Statistical Experimental Design    424
+19                                          Theory of Probability I    733
+20                                    Intro to Biostats for Phamacy    441
+21                                    Applied Multivariate Analysis    456
+22                                         Nonlinear Optimization I    726
+23                         Introduction to Computational Statistics    471
+24                                             Financial Statistics    461
+25                             Statistical Methods for Bioscience I    571
+26                                        Mathematical Statistics I    609
+27                            Statistical Methods for Bioscience II    572
+28                                           Statistical Methods II    602
+29                                         Theory of Probability II    734
+30                                          Mathematical Statistics    709
+31                                            Statistical Methods I    601
+32 Theory and Application of Regression and Analysis of Variance II    850
+33                            Introduction to Statistical Inference    610
+34                                          Mathematical Statistics    710
+35                                  Learning a Statistical Language    327
+36  Theory and Application of Regression and Analysis of Variance I    849
+37                          Statistical Methods for Clinical Trials    641
+38                              Professional Skills in Data Science    627
+39                                            Theory of Probability    831
+40                                     Special Topics in Statistics    479
+41                                Introduction to Clinical Trials I    542
+42                  Introduction to Bayesian Decision and Control I    775
+43                                        Generalized Linear Models    851
+44                                           Statistical Consulting    998
+45                                    Introduction to Biostatistics    541
+46         Introduction to Biostatistical Methods for Public Health    511
+47          Applied Time Series Analysis, Forecasting and Control I    701
+48                             Statistical Methods for Spatial Data    575
+49                                            Statistical Computing    771
+50                                            Theory of Probability    832
+51                                          Multivariate Analysis I    760
+52                     Large Sample Theory of Statistical Inference    732
+53                                     Special Topics in Statistics    692
+54                                     Special Topics in Statistics    679
+55                             Statistical Methods for Epidemiology    642
+56                             Survival Analysis Theory and Methods    741
+57                            Introductory Nonparametric Statistics    351
+58                        Statistical Methods for Molecular Biology    877
+59                                      Nonlinear Regressn Analysis    824
+60                              Topics in the Theory of Probability    833
+61                                                          Seminar    992
+62                          Statistical Model Building and Learning    840
+63                         Decision Trees for Multivariate Analysis    761
+64                                        Non Parametric Statistics    809
+65                                Estimation of Functions from Data    860
+66                                            Experimental Design I    803
+67                                           Data Science Practicum    628
+68                                   Empir Proc&amp;Semiparmtrc Infernc    834
+69            Nonparametric Statistics and Machine Learning Methods    841
+70                                  Sample Survey Theory and Method    811
+   media_gpa
+1   2.891568
+2   2.957360
+3   3.031950
+4   3.039691
+5   3.059488
+6   3.076261
+7   3.097313
+8   3.117675
+9   3.149073
+10  3.178822
+11  3.210439
+12  3.223803
+13  3.250943
+14  3.308202
+15  3.323837
+16  3.329263
+17  3.407680
+18  3.419259
+19  3.425017
+20  3.426641
+21  3.429645
+22  3.447456
+23  3.458916
+24  3.475757
+25  3.489562
+26  3.502526
+27  3.513428
+28  3.520567
+29  3.538027
+30  3.556040
+31  3.564059
+32  3.595450
+33  3.596234
+34  3.600373
+35  3.611165
+36  3.611908
+37  3.623389
+38  3.637931
+39  3.646316
+40  3.654499
+41  3.662425
+42  3.674624
+43  3.680000
+44  3.695769
+45  3.695793
+46  3.722009
+47  3.753848
+48  3.753965
+49  3.755939
+50  3.810367
+51  3.830763
+52  3.830808
+53  3.836684
+54  3.837578
+55  3.842905
+56  3.855044
+57  3.866667
+58  3.869444
+59  3.909091
+60  3.931512
+61  3.953487
+62  3.967902
+63  3.968244
+64  3.971397
+65  3.977381
+66  3.982051
+67  4.000000
+68  4.000000
+69  4.000000
+70  4.000000</code></pre>
+</div>
+</div>
+</section>
+<section id="ranking-das-disciplinas-mais-fáceis-maior-gpa" class="level2">
+<h2 class="anchored" data-anchor-id="ranking-das-disciplinas-mais-fáceis-maior-gpa">Ranking das disciplinas mais fáceis (maior GPA)</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"</span><span class="sc">\n</span><span class="st">PERGUNTA 2d: Ranking das disciplinas (da mais fácil para a mais difícil)</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+PERGUNTA 2d: Ranking das disciplinas (da mais fácil para a mais difícil)</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Agrupa por disciplina, calcula o GPA médio e ordena de forma decrescente</span></span>
+<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a>query_disc_facil <span class="ot">&lt;-</span> <span class="fu">paste</span>(cte_gpa_stat, <span class="st">"</span></span>
+<span id="cb40-4"><a href="#cb40-4" aria-hidden="true" tabindex="-1"></a><span class="st">SELECT c.name, c.number, AVG(gpo.gpa) as media_gpa FROM gpa_por_oferta gpo</span></span>
+<span id="cb40-5"><a href="#cb40-5" aria-hidden="true" tabindex="-1"></a><span class="st">INNER JOIN course_offerings co ON gpo.course_offering_uuid = co.uuid</span></span>
+<span id="cb40-6"><a href="#cb40-6" aria-hidden="true" tabindex="-1"></a><span class="st">INNER JOIN courses c ON co.course_uuid = c.uuid</span></span>
+<span id="cb40-7"><a href="#cb40-7" aria-hidden="true" tabindex="-1"></a><span class="st">GROUP BY c.name, c.number HAVING media_gpa IS NOT NULL ORDER BY media_gpa DESC;</span></span>
+<span id="cb40-8"><a href="#cb40-8" aria-hidden="true" tabindex="-1"></a><span class="st">"</span>)</span>
+<span id="cb40-9"><a href="#cb40-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-10"><a href="#cb40-10" aria-hidden="true" tabindex="-1"></a>disc_facil <span class="ot">&lt;-</span> <span class="fu">dbGetQuery</span>(conn, query_disc_facil)</span>
+<span id="cb40-11"><a href="#cb40-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-12"><a href="#cb40-12" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"RESULTADO:</span><span class="sc">\n</span><span class="st">"</span>); <span class="fu">print</span>(disc_facil)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>RESULTADO:</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                                                               name number
+1                                            Data Science Practicum    628
+2                                    Empir Proc&amp;Semiparmtrc Infernc    834
+3             Nonparametric Statistics and Machine Learning Methods    841
+4                                   Sample Survey Theory and Method    811
+5                                             Experimental Design I    803
+6                                 Estimation of Functions from Data    860
+7                                         Non Parametric Statistics    809
+8                          Decision Trees for Multivariate Analysis    761
+9                           Statistical Model Building and Learning    840
+10                                                          Seminar    992
+11                              Topics in the Theory of Probability    833
+12                                      Nonlinear Regressn Analysis    824
+13                        Statistical Methods for Molecular Biology    877
+14                            Introductory Nonparametric Statistics    351
+15                             Survival Analysis Theory and Methods    741
+16                             Statistical Methods for Epidemiology    642
+17                                     Special Topics in Statistics    679
+18                                     Special Topics in Statistics    692
+19                     Large Sample Theory of Statistical Inference    732
+20                                          Multivariate Analysis I    760
+21                                            Theory of Probability    832
+22                                            Statistical Computing    771
+23                             Statistical Methods for Spatial Data    575
+24          Applied Time Series Analysis, Forecasting and Control I    701
+25         Introduction to Biostatistical Methods for Public Health    511
+26                                    Introduction to Biostatistics    541
+27                                           Statistical Consulting    998
+28                                        Generalized Linear Models    851
+29                  Introduction to Bayesian Decision and Control I    775
+30                                Introduction to Clinical Trials I    542
+31                                     Special Topics in Statistics    479
+32                                            Theory of Probability    831
+33                              Professional Skills in Data Science    627
+34                          Statistical Methods for Clinical Trials    641
+35  Theory and Application of Regression and Analysis of Variance I    849
+36                                  Learning a Statistical Language    327
+37                                          Mathematical Statistics    710
+38                            Introduction to Statistical Inference    610
+39 Theory and Application of Regression and Analysis of Variance II    850
+40                                            Statistical Methods I    601
+41                                          Mathematical Statistics    709
+42                                         Theory of Probability II    734
+43                                           Statistical Methods II    602
+44                            Statistical Methods for Bioscience II    572
+45                                        Mathematical Statistics I    609
+46                             Statistical Methods for Bioscience I    571
+47                                             Financial Statistics    461
+48                         Introduction to Computational Statistics    471
+49                                         Nonlinear Optimization I    726
+50                                    Applied Multivariate Analysis    456
+51                                    Intro to Biostats for Phamacy    441
+52                                          Theory of Probability I    733
+53                                  Statistical Experimental Design    424
+54                                      Introduction to Time Series    349
+55 Introduction to Theory and Methods of Mathematical Statistics II    312
+56                                Applied Categorical Data Analysis    421
+57                                      Applied Regression Analysis    333
+58                  Accelerated Introduction to Statistical Methods    302
+59            Introductory Applied Statistics for the Life Sciences    371
+60              An Introduction to Sample Survey Theory and Methods    411
+61                    Introductory Applied Statistics for Engineers    324
+62  Introduction to Theory and Methods of Mathematical Statistics I    311
+63                                    Introduction to Combinatorics    475
+64       Introduction to Probability and Mathematical Statistics II    310
+65                              Introduction to Statistical Methods    301
+66                             Introduction to Stochastic Processes    632
+67                            Introductory Statistics for Engineers    224
+68        Introduction to Probability and Mathematical Statistics I    309
+69                                       Linear Programming Methods    525
+70                        Introduction to the Theory of Probability    431
+   media_gpa
+1   4.000000
+2   4.000000
+3   4.000000
+4   4.000000
+5   3.982051
+6   3.977381
+7   3.971397
+8   3.968244
+9   3.967902
+10  3.953487
+11  3.931512
+12  3.909091
+13  3.869444
+14  3.866667
+15  3.855044
+16  3.842905
+17  3.837578
+18  3.836684
+19  3.830808
+20  3.830763
+21  3.810367
+22  3.755939
+23  3.753965
+24  3.753848
+25  3.722009
+26  3.695793
+27  3.695769
+28  3.680000
+29  3.674624
+30  3.662425
+31  3.654499
+32  3.646316
+33  3.637931
+34  3.623389
+35  3.611908
+36  3.611165
+37  3.600373
+38  3.596234
+39  3.595450
+40  3.564059
+41  3.556040
+42  3.538027
+43  3.520567
+44  3.513428
+45  3.502526
+46  3.489562
+47  3.475757
+48  3.458916
+49  3.447456
+50  3.429645
+51  3.426641
+52  3.425017
+53  3.419259
+54  3.407680
+55  3.329263
+56  3.323837
+57  3.308202
+58  3.250943
+59  3.223803
+60  3.210439
+61  3.178822
+62  3.149073
+63  3.117675
+64  3.097313
+65  3.076261
+66  3.059488
+67  3.039691
+68  3.031950
+69  2.957360
+70  2.891568</code></pre>
+</div>
+</div>
+</section>
+<section id="desconexão-do-banco-de-dados" class="level2">
+<h2 class="anchored" data-anchor-id="desconexão-do-banco-de-dados">Desconexão do Banco de Dados</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="fu">dbDisconnect</span>(conn)</span>
+<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"</span><span class="sc">\n</span><span class="st">--- Fim da Análise ---</span><span class="sc">\n</span><span class="st">Conexão com o banco de dados fechada.</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+--- Fim da Análise ---
+Conexão com o banco de dados fechada.</code></pre>
+</div>
+</div>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
