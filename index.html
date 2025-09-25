@@ -3,91 +3,121 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Manipulação de Banco de Dados - Desafios</title>
+  <title>ME315 - Manipulação de Banco de Dados</title>
   <style>
     body {
-      font-family: Arial, sans-serif;
+      font-family: "Segoe UI", Arial, sans-serif;
       margin: 0;
       padding: 0;
-      background: #f5f5f5;
+      background: #f4f7fb;
       color: #333;
     }
     header {
-      background: #0e3661;
+      background: linear-gradient(135deg, #0e3661, #005f8a);
       color: white;
       text-align: center;
-      padding: 20px;
+      padding: 30px 20px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    }
+    header h1 {
+      margin: 0;
+      font-size: 28px;
+      font-weight: bold;
+    }
+    header p {
+      margin-top: 8px;
+      font-size: 16px;
+      opacity: 0.9;
     }
     main {
-      max-width: 800px;
-      margin: 30px auto;
+      max-width: 900px;
+      margin: 40px auto;
       background: white;
-      padding: 20px;
-      border-radius: 8px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
     }
     h2 {
+      margin-top: 0;
+      color: #0e3661;
+      border-left: 5px solid #0e3661;
+      padding-left: 10px;
       margin-bottom: 20px;
+    }
+    section {
+      margin-bottom: 40px;
     }
     ul {
       list-style: none;
       padding: 0;
-    }
-    ul li {
-      margin: 10px 0;
+      margin: 0;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 15px;
     }
     ul li a {
       display: block;
-      padding: 12px;
+      padding: 14px;
       background: #0e3661;
       color: white;
+      text-align: center;
       text-decoration: none;
-      border-radius: 6px;
-      transition: background 0.3s;
+      border-radius: 8px;
+      font-weight: 500;
+      transition: all 0.3s;
     }
     ul li a:hover {
       background: #005f8a;
+      transform: translateY(-2px);
+      box-shadow: 0 3px 6px rgba(0,0,0,0.2);
     }
     footer {
       margin-top: 40px;
       text-align: center;
       font-size: 14px;
       color: #666;
-      padding: 15px;
-      background: #eee;
+      padding: 20px;
+      background: #f1f1f1;
+      border-top: 1px solid #ddd;
     }
   </style>
 </head>
 <body>
   <header>
-    <h1>Manipulação de Banco de Dados</h1>
-    <p>Selecione um dos desafios abaixo:</p>
+    <h1>ME315 - Manipulação de Banco de Dados</h1>
+    <p>Selecione um dos desafios abaixo para visualizar ou baixar os arquivos</p>
   </header>
+  
   <main>
-    <h2>Desafios</h2>
-  <ul>
-    <li>DESAFIO 1 - <a href="DESAFIO 1/Desafio1.Rmd" download>Baixar RMD</a></li>
-    <li>DESAFIO 2 - <a href="DESAFIO 2/Desafio2.qmd" download>Baixar QMD</a></li>
-    <li>DESAFIO 3 - <a href="DESAFIO 3/Desafio3.qmd" download>Baixar QMD</a></li>
-    <li>DESAFIO 4 - <a href="DESAFIO 4/Desafio4.qmd" download>Baixar QMD</a></li>
-    <li>DESAFIO 5 - <a href="DESAFIO 5/Desafio5.qmd" download>Baixar QMD</a></li>
-    <li>DESAFIO 6 - <a href="DESAFIO 6/Desafio6.qmd" download>Baixar QMD</a></li>
-    <li>DESAFIO 7 - <a href="DESAFIO 7/Desafio7.qmd" download>Baixar QMD</a></li>
-    <li>DESAFIO 8 - <a href="DESAFIO 8/Desafio8.qmd" download>Baixar QMD</a></li>
-
-  </ul>
-    <h2>Desafios</h2>
-    <ul>
-      <li><a href="DESAFIO 1/Desafio1.html">Desafio 1</a></li>
-      <li><a href="DESAFIO 2/Desafio2.html">Desafio 2</a></li>
-      <li><a href="DESAFIO 3/Desafio3.html">Desafio 3</a></li>
-      <li><a href="DESAFIO 4/Desafio4.html">Desafio 4</a></li>
-      <li><a href="DESAFIO 5/Desafio5.html">Desafio 5</a></li>
-      <li><a href="DESAFIO 6/Desafio6.html">Desafio 6</a></li>
-      <li><a href="DESAFIO 7/Desafio7.html">Desafio 7</a></li>
-      <li><a href="DESAFIO 8/Desafio8.html">Desafio 8</a></li>
-    </ul>
+    <section>
+      <h2>📥 Downloads dos Arquivos</h2>
+      <ul>
+        <li><a href="DESAFIO 1/Desafio1.Rmd" download>Desafio 1 (RMD)</a></li>
+        <li><a href="DESAFIO 2/Desafio2.qmd" download>Desafio 2 (QMD)</a></li>
+        <li><a href="DESAFIO 3/Desafio3.qmd" download>Desafio 3 (QMD)</a></li>
+        <li><a href="DESAFIO 4/Desafio4.qmd" download>Desafio 4 (QMD)</a></li>
+        <li><a href="DESAFIO 5/Desafio5.qmd" download>Desafio 5 (QMD)</a></li>
+        <li><a href="DESAFIO 6/Desafio6.qmd" download>Desafio 6 (QMD)</a></li>
+        <li><a href="DESAFIO 7/Desafio7.qmd" download>Desafio 7 (QMD)</a></li>
+        <li><a href="DESAFIO 8/Desafio8.qmd" download>Desafio 8 (QMD)</a></li>
+      </ul>
+    </section>
+    
+    <section>
+      <h2>🌐 Visualização Online</h2>
+      <ul>
+        <li><a href="DESAFIO 1/Desafio1.html">Desafio 1</a></li>
+        <li><a href="DESAFIO 2/Desafio2.html">Desafio 2</a></li>
+        <li><a href="DESAFIO 3/Desafio3.html">Desafio 3</a></li>
+        <li><a href="DESAFIO 4/Desafio4.html">Desafio 4</a></li>
+        <li><a href="DESAFIO 5/Desafio5.html">Desafio 5</a></li>
+        <li><a href="DESAFIO 6/Desafio6.html">Desafio 6</a></li>
+        <li><a href="DESAFIO 7/Desafio7.html">Desafio 7</a></li>
+        <li><a href="DESAFIO 8/Desafio8.html">Desafio 8</a></li>
+      </ul>
+    </section>
   </main>
+
   <footer>
     <p>Feito por Elisa Amorim Da Costa © 2025</p>
   </footer>
