@@ -4,122 +4,214 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>ME315 - Manipulação de Banco de Dados</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
   <style>
+    :root {
+      --primary-color: #005f73;
+      --secondary-color: #0a9396;
+      --background-color: #f0f4f8;
+      --card-background: #ffffff;
+      --text-color: #333;
+      --header-text-color: #ffffff;
+      --shadow-color: rgba(0, 0, 0, 0.1);
+    }
+
     body {
-      font-family: "Segoe UI", Arial, sans-serif;
+      font-family: 'Poppins', sans-serif;
       margin: 0;
       padding: 0;
-      background: #f4f7fb;
-      color: #333;
+      background-color: var(--background-color);
+      color: var(--text-color);
+      line-height: 1.6;
     }
+
+    .container {
+      max-width: 900px;
+      margin: 30px auto;
+      padding: 0 20px;
+    }
+
     header {
-      background: linear-gradient(135deg, #0e3661, #005f8a);
-      color: white;
+      background: var(--primary-color);
+      color: var(--header-text-color);
       text-align: center;
-      padding: 30px 20px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+      padding: 40px 20px;
+      border-bottom: 5px solid var(--secondary-color);
     }
+
     header h1 {
       margin: 0;
-      font-size: 28px;
-      font-weight: bold;
+      font-size: 2.5em;
+      font-weight: 700;
     }
+
     header p {
-      margin-top: 8px;
-      font-size: 16px;
+      margin: 5px 0 0;
+      font-size: 1.2em;
       opacity: 0.9;
     }
-    main {
-      max-width: 900px;
-      margin: 40px auto;
-      background: white;
-      padding: 30px;
-      border-radius: 10px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-    }
-    h2 {
-      margin-top: 0;
-      color: #0e3661;
-      border-left: 5px solid #0e3661;
-      padding-left: 10px;
-      margin-bottom: 20px;
-    }
-    section {
-      margin-bottom: 40px;
-    }
-    ul {
-      list-style: none;
-      padding: 0;
-      margin: 0;
+
+    .challenges-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      grid-template-columns: 1fr; /* Uma coluna por padrão */
+      gap: 25px;
+      padding: 0;
+      list-style: none;
+    }
+
+    /* Layout de duas colunas para telas maiores */
+    @media (min-width: 768px) {
+      .challenges-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    .challenge-card {
+      background: var(--card-background);
+      border-radius: 12px;
+      box-shadow: 0 4px 8px var(--shadow-color);
+      padding: 25px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .challenge-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 16px var(--shadow-color);
+    }
+
+    .challenge-card h3 {
+      margin: 0 0 20px 0;
+      font-size: 1.5em;
+      color: var(--primary-color);
+      border-bottom: 2px solid #eee;
+      padding-bottom: 10px;
+    }
+
+    .card-actions {
+      display: flex;
       gap: 15px;
+      flex-wrap: wrap; /* Garante que os botões se ajustem em telas pequenas */
     }
-    ul li a {
-      display: block;
-      padding: 14px;
-      background: #0e3661;
-      color: white;
-      text-align: center;
-      text-decoration: none;
+
+    .btn {
+      display: inline-block;
+      padding: 10px 20px;
       border-radius: 8px;
-      font-weight: 500;
-      transition: all 0.3s;
-    }
-    ul li a:hover {
-      background: #005f8a;
-      transform: translateY(-2px);
-      box-shadow: 0 3px 6px rgba(0,0,0,0.2);
-    }
-    footer {
-      margin-top: 40px;
+      text-decoration: none;
+      font-weight: 600;
       text-align: center;
-      font-size: 14px;
+      transition: all 0.3s ease;
+      flex-grow: 1; /* Faz os botões ocuparem o espaço disponível */
+    }
+
+    .btn-view {
+      background-color: var(--secondary-color);
+      color: white;
+    }
+
+    .btn-view:hover {
+      background-color: #087a7d;
+      transform: scale(1.05);
+    }
+    
+    .btn-download {
+      background-color: transparent;
+      color: var(--primary-color);
+      border: 2px solid var(--primary-color);
+    }
+
+    .btn-download:hover {
+      background-color: var(--primary-color);
+      color: white;
+      transform: scale(1.05);
+    }
+
+    footer {
+      margin-top: 50px;
+      text-align: center;
+      font-size: 0.9em;
       color: #666;
       padding: 20px;
-      background: #f1f1f1;
-      border-top: 1px solid #ddd;
+      background: #e9ecef;
     }
   </style>
 </head>
 <body>
+
   <header>
     <h1>ME315 - Manipulação de Banco de Dados</h1>
-    <p>Selecione um dos desafios abaixo para visualizar ou baixar os arquivos</p>
+    <p>Repositório de Desafios da Disciplina</p>
   </header>
-  
-  <main>
-    <section>
-      <h2>📥 Downloads dos Arquivos</h2>
-      <ul>
-        <li><a href="DESAFIO 1/Desafio1.Rmd" download>Desafio 1 (RMD)</a></li>
-        <li><a href="DESAFIO 2/Desafio2.qmd" download>Desafio 2 (QMD)</a></li>
-        <li><a href="DESAFIO 3/Desafio3.qmd" download>Desafio 3 (QMD)</a></li>
-        <li><a href="DESAFIO 4/Desafio4.qmd" download>Desafio 4 (QMD)</a></li>
-        <li><a href="DESAFIO 5/Desafio5.qmd" download>Desafio 5 (QMD)</a></li>
-        <li><a href="DESAFIO 6/Desafio6.qmd" download>Desafio 6 (QMD)</a></li>
-        <li><a href="DESAFIO 7/Desafio7.qmd" download>Desafio 7 (QMD)</a></li>
-        <li><a href="DESAFIO 8/Desafio8.qmd" download>Desafio 8 (QMD)</a></li>
-      </ul>
-    </section>
-    
-    <section>
-      <h2>🌐 Visualização Online</h2>
-      <ul>
-        <li><a href="DESAFIO 1/Desafio1.html">Desafio 1</a></li>
-        <li><a href="DESAFIO 2/Desafio2.html">Desafio 2</a></li>
-        <li><a href="DESAFIO 3/Desafio3.html">Desafio 3</a></li>
-        <li><a href="DESAFIO 4/Desafio4.html">Desafio 4</a></li>
-        <li><a href="DESAFIO 5/Desafio5.html">Desafio 5</a></li>
-        <li><a href="DESAFIO 6/Desafio6.html">Desafio 6</a></li>
-        <li><a href="DESAFIO 7/Desafio7.html">Desafio 7</a></li>
-        <li><a href="DESAFIO 8/Desafio8.html">Desafio 8</a></li>
-      </ul>
-    </section>
+
+  <main class="container">
+    <ul class="challenges-grid">
+      <li class="challenge-card">
+        <h3>Desafio 1</h3>
+        <div class="card-actions">
+          <a href="DESAFIO 1/Desafio1.html" class="btn btn-view">Visualizar</a>
+          <a href="DESAFIO 1/Desafio1.Rmd" class="btn btn-download" download>Download .Rmd</a>
+        </div>
+      </li>
+      <li class="challenge-card">
+        <h3>Desafio 2</h3>
+        <div class="card-actions">
+          <a href="DESAFIO 2/Desafio2.html" class="btn btn-view">Visualizar</a>
+          <a href="DESAFIO 2/Desafio2.qmd" class="btn btn-download" download>Download .qmd</a>
+        </div>
+      </li>
+      <li class="challenge-card">
+        <h3>Desafio 3</h3>
+        <div class="card-actions">
+          <a href="DESAFIO 3/Desafio3.html" class="btn btn-view">Visualizar</a>
+          <a href="DESAFIO 3/Desafio3.qmd" class="btn btn-download" download>Download .qmd</a>
+        </div>
+      </li>
+      <li class="challenge-card">
+        <h3>Desafio 4</h3>
+        <div class="card-actions">
+          <a href="DESAFIO 4/Desafio4.html" class="btn btn-view">Visualizar</a>
+          <a href="DESAFIO 4/Desafio4.qmd" class="btn btn-download" download>Download .qmd</a>
+        </div>
+      </li>
+      <li class="challenge-card">
+        <h3>Desafio 5</h3>
+        <div class="card-actions">
+          <a href="DESAFIO 5/Desafio5.html" class="btn btn-view">Visualizar</a>
+          <a href="DESAFIO 5/Desafio5.qmd" class="btn btn-download" download>Download .qmd</a>
+        </div>
+      </li>
+      <li class="challenge-card">
+        <h3>Desafio 6</h3>
+        <div class="card-actions">
+          <a href="DESAFIO 6/Desafio6.html" class="btn btn-view">Visualizar</a>
+          <a href="DESAFIO 6/Desafio6.qmd" class="btn btn-download" download>Download .qmd</a>
+        </div>
+      </li>
+      <li class="challenge-card">
+        <h3>Desafio 7</h3>
+        <div class="card-actions">
+          <a href="DESAFIO 7/Desafio7.html" class="btn btn-view">Visualizar</a>
+          <a href="DESAFIO 7/Desafio7.qmd" class="btn btn-download" download>Download .qmd</a>
+        </div>
+      </li>
+      <li class="challenge-card">
+        <h3>Desafio 8</h3>
+        <div class="card-actions">
+          <a href="DESAFIO 8/Desafio8.html" class="btn btn-view">Visualizar</a>
+          <a href="DESAFIO 8/Desafio8.qmd" class="btn btn-download" download>Download .qmd</a>
+        </div>
+      </li>
+    </ul>
   </main>
 
   <footer>
     <p>Feito por Elisa Amorim Da Costa © 2025</p>
   </footer>
+
 </body>
 </html>
