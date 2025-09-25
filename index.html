@@ -6,16 +6,17 @@
   <title>ME315 - Manipulação de Banco de Dados</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&display=swap" rel="stylesheet">
   <style>
     :root {
-      --primary-color: #005f73;
-      --secondary-color: #0a9396;
-      --background-color: #f0f4f8;
+      --primary-color: #0d47a1;   /* Azul escuro */
+      --secondary-color: #1976d2; /* Azul médio */
+      --accent-color: #42a5f5;    /* Azul claro */
+      --background-color: #f4f8fb; /* Fundo azulado bem claro */
       --card-background: #ffffff;
       --text-color: #333;
       --header-text-color: #ffffff;
-      --shadow-color: rgba(0, 0, 0, 0.1);
+      --shadow-color: rgba(0, 0, 0, 0.08);
     }
 
     body {
@@ -29,39 +30,40 @@
 
     .container {
       max-width: 900px;
-      margin: 30px auto;
+      margin: 40px auto;
       padding: 0 20px;
     }
 
     header {
       background: var(--primary-color);
+      background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
       color: var(--header-text-color);
       text-align: center;
-      padding: 40px 20px;
-      border-bottom: 5px solid var(--secondary-color);
+      padding: 50px 20px;
+      border-bottom-left-radius: 15px;
+      border-bottom-right-radius: 15px;
     }
 
     header h1 {
       margin: 0;
-      font-size: 2.5em;
+      font-size: 2.8em;
       font-weight: 700;
     }
 
     header p {
-      margin: 5px 0 0;
+      margin: 10px 0 0;
       font-size: 1.2em;
       opacity: 0.9;
     }
 
     .challenges-grid {
       display: grid;
-      grid-template-columns: 1fr; /* Uma coluna por padrão */
-      gap: 25px;
+      grid-template-columns: 1fr;
+      gap: 30px;
       padding: 0;
       list-style: none;
     }
 
-    /* Layout de duas colunas para telas maiores */
     @media (min-width: 768px) {
       .challenges-grid {
         grid-template-columns: repeat(2, 1fr);
@@ -71,31 +73,40 @@
     .challenge-card {
       background: var(--card-background);
       border-radius: 12px;
-      box-shadow: 0 4px 8px var(--shadow-color);
-      padding: 25px;
+      border: 1px solid #e0e0e0;
+      box-shadow: 0 4px 12px var(--shadow-color);
+      padding: 25px 30px;
       display: flex;
       flex-direction: column;
-      justify-content: space-between;
       transition: transform 0.3s ease, box-shadow 0.3s ease;
     }
 
     .challenge-card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 8px 16px var(--shadow-color);
+      transform: translateY(-8px);
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.12);
     }
 
     .challenge-card h3 {
-      margin: 0 0 20px 0;
-      font-size: 1.5em;
+      margin: 0 0 15px 0;
+      font-size: 1.6em;
       color: var(--primary-color);
-      border-bottom: 2px solid #eee;
+      border-bottom: 2px solid var(--background-color);
       padding-bottom: 10px;
+      font-weight: 700;
+    }
+    
+    .challenge-card p {
+      font-size: 0.95em;
+      color: #555;
+      flex-grow: 1; /* Faz o parágrafo ocupar o espaço, alinhando os botões */
+      margin-bottom: 20px;
     }
 
     .card-actions {
       display: flex;
       gap: 15px;
-      flex-wrap: wrap; /* Garante que os botões se ajustem em telas pequenas */
+      flex-wrap: wrap;
+      margin-top: auto; /* Alinha os botões na parte inferior */
     }
 
     .btn {
@@ -103,10 +114,10 @@
       padding: 10px 20px;
       border-radius: 8px;
       text-decoration: none;
-      font-weight: 600;
+      font-weight: 500;
       text-align: center;
       transition: all 0.3s ease;
-      flex-grow: 1; /* Faz os botões ocuparem o espaço disponível */
+      flex: 1;
     }
 
     .btn-view {
@@ -115,28 +126,28 @@
     }
 
     .btn-view:hover {
-      background-color: #087a7d;
+      background-color: var(--accent-color);
       transform: scale(1.05);
     }
     
     .btn-download {
       background-color: transparent;
-      color: var(--primary-color);
-      border: 2px solid var(--primary-color);
+      color: var(--secondary-color);
+      border: 2px solid var(--secondary-color);
     }
 
     .btn-download:hover {
-      background-color: var(--primary-color);
+      background-color: var(--secondary-color);
       color: white;
       transform: scale(1.05);
     }
 
     footer {
-      margin-top: 50px;
+      margin-top: 60px;
       text-align: center;
       font-size: 0.9em;
-      color: #666;
-      padding: 20px;
+      color: #777;
+      padding: 25px;
       background: #e9ecef;
     }
   </style>
@@ -152,6 +163,7 @@
     <ul class="challenges-grid">
       <li class="challenge-card">
         <h3>Desafio 1</h3>
+        <p>Foco na importação e manipulação de dados em formato *tidy* com `dplyr`. Aborda a transformação de tabelas, agregação de dados e criação de gráficos com `ggplot2` usando dados de tuberculose.</p>
         <div class="card-actions">
           <a href="DESAFIO 1/Desafio1.html" class="btn btn-view">Visualizar</a>
           <a href="DESAFIO 1/Desafio1.Rmd" class="btn btn-download" download>Download .Rmd</a>
@@ -159,6 +171,7 @@
       </li>
       <li class="challenge-card">
         <h3>Desafio 2</h3>
+        <p>Ensina a processar grandes bases de dados que não cabem na memória. A técnica consiste em ler e processar o arquivo em partes (*chunks*), calculando estatísticas e combinando os resultados ao final.</p>
         <div class="card-actions">
           <a href="DESAFIO 2/Desafio2.html" class="btn btn-view">Visualizar</a>
           <a href="DESAFIO 2/Desafio2.qmd" class="btn btn-download" download>Download .qmd</a>
@@ -166,6 +179,7 @@
       </li>
       <li class="challenge-card">
         <h3>Desafio 3</h3>
+        <p>Focado em dados relacionais, ensinando a combinar múltiplas tabelas com diferentes tipos de *joins*. O objetivo é enriquecer uma base de dados principal com informações de tabelas secundárias.</p>
         <div class="card-actions">
           <a href="DESAFIO 3/Desafio3.html" class="btn btn-view">Visualizar</a>
           <a href="DESAFIO 3/Desafio3.qmd" class="btn btn-download" download>Download .qmd</a>
@@ -173,6 +187,7 @@
       </li>
       <li class="challenge-card">
         <h3>Desafio 4</h3>
+        <p>Aborda a importação e manipulação de dados de planilhas Excel. Ensina a selecionar planilhas, limpar nomes de colunas, verificar o formato *tidy* e criar visualizações de séries temporais.</p>
         <div class="card-actions">
           <a href="DESAFIO 4/Desafio4.html" class="btn btn-view">Visualizar</a>
           <a href="DESAFIO 4/Desafio4.qmd" class="btn btn-download" download>Download .qmd</a>
@@ -180,6 +195,7 @@
       </li>
       <li class="challenge-card">
         <h3>Desafio 5</h3>
+        <p>Cria uma função em R para rastrear a rota de uma aeronave, lendo dados de voos em partes (*chunks*). O resultado é uma tabela e um mapa interativo com o trajeto e estatísticas de voo.</p>
         <div class="card-actions">
           <a href="DESAFIO 5/Desafio5.html" class="btn btn-view">Visualizar</a>
           <a href="DESAFIO 5/Desafio5.qmd" class="btn btn-download" download>Download .qmd</a>
@@ -187,6 +203,7 @@
       </li>
       <li class="challenge-card">
         <h3>Desafio 6</h3>
+        <p>Introdução à manipulação de bancos de dados SQLite a partir do R. O laboratório ensina a conectar, listar tabelas e executar consultas SQL para contar clientes por país e identificar músicas compradas.</p>
         <div class="card-actions">
           <a href="DESAFIO 6/Desafio6.html" class="btn btn-view">Visualizar</a>
           <a href="DESAFIO 6/Desafio6.qmd" class="btn btn-download" download>Download .qmd</a>
@@ -194,6 +211,7 @@
       </li>
       <li class="challenge-card">
         <h3>Desafio 7</h3>
+        <p>Laboratório de introdução ao SQLite usando R como interface. Ensina a explorar tabelas, realizar consultas com `WHERE` e `INNER JOIN`, e extrair dados para análise e visualização.</p>
         <div class="card-actions">
           <a href="DESAFIO 7/Desafio7.html" class="btn btn-view">Visualizar</a>
           <a href="DESAFIO 7/Desafio7.qmd" class="btn btn-download" download>Download .qmd</a>
@@ -201,6 +219,7 @@
       </li>
       <li class="challenge-card">
         <h3>Desafio 8</h3>
+        <p>Processamento de grandes volumes de dados com armazenamento em um banco de dados SQLite. Utiliza a leitura em *chunks* para filtrar e inserir dados de voos de forma eficiente em tabelas.</p>
         <div class="card-actions">
           <a href="DESAFIO 8/Desafio8.html" class="btn btn-view">Visualizar</a>
           <a href="DESAFIO 8/Desafio8.qmd" class="btn btn-download" download>Download .qmd</a>
