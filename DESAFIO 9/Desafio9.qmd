@@ -1,0 +1,124 @@
+---
+title: "Desafio 9"
+author: "Elisa Amorim Da Costa"
+output:
+  html_document:
+    self_contained: true
+editor: visual
+---
+
+```{r}
+# Imprime a data e a hora que foi compilado o arquivo
+
+cat("Compilado em:", format(Sys.time(), "%Y-%m-%d %H:%M:%S"), "\n")
+```
+
+## Importação dos Dados Iniciais
+
+Primeiro é carregado as bibliotecas necessárias, definindo o nome do banco de dados. Logo após, as tabelas `airlines` e `airports` são peenchidas com os dados dos arquivos CSV correspondentes
+
+```{r}
+library(DBI)
+library(RSQLite)
+library(readr)
+library(dplyr)
+```
+
+
+```{r}
+db_file <- "voos.sqlite3"
+
+# Cria uma conexão com o banco de dados SQLite
+
+con <- dbConnect(RSQLite::SQLite(), db_file)
+
+# Lê os arquivos CSV e os escreve nas tabelas do banco de dados
+# O argumento 'overwrite = TRUE' garante que a tabela seja recriada se já existir
+
+dbWriteTable(con, "airlines", read_csv("airlines.csv"), overwrite = TRUE)
+dbWriteTable(con, "airports", read_csv("airports.csv"), overwrite = TRUE)
+```
+
+## Filtrando e Carregando os Dados de Voos
+
+
+O arquivo `flights.csv` é muito grande, por isso é usada uma função (`lerDados`) que processa o arquivo em "pedaços". A função filtra os voos de interesse  e os adiciona à tabela `flights` no banco de dados.
+
+```{r}
+# Define os aeroportos de interesse para o filtro
+aeroportos_interesse <- c("BWI", "MIA", "SEA", "SFO", "JFK")
+
+# Função para processar cada lote de dados, conforme solicitado
+lerDados <- function(input, pos) {
+  # Exibe uma mensagem de progresso no console
+  message("Processando a partir da linha ", pos)
+  
+  # Filtra as linhas onde a origem ou o destino estão na lista de interesse.
+  voos_filtrados <- subset(input, ORIGIN_AIRPORT %in% aeroportos_interesse | DESTINATION_AIRPORT %in% aeroportos_interesse)
+  
+  # Adiciona os dados filtrados à tabela 'flights' no banco
+  # 'append = TRUE' : dados de cada lote são adicionados sem apagar os anteriores
+  dbWriteTable(con, "flights", voos_filtrados, append = TRUE)
+}
+
+# Lê o arquivo 'flights.csv' em lotes, aplicando a função 'lerDados'
+read_csv_chunked(
+  "flights.csv",
+  callback = SideEffectChunkCallback$new(lerDados),
+  chunk_size = 100000,
+  # Usei o  col_types para selecionar as colunas de forma compatível com qualquer versão do readr, pois o col_select não estava funcionando
+  col_types = cols(
+    YEAR = col_integer(),
+    MONTH = col_integer(),
+    DAY = col_integer(),
+    AIRLINE = col_character(),
+    FLIGHT_NUMBER = col_integer(),
+    ORIGIN_AIRPORT = col_character(),
+    DESTINATION_AIRPORT = col_character(),
+    ARRIVAL_DELAY = col_double(),
+    .default = col_skip() # Pula todas as colunas não especificadas
+  )
+)
+
+message("Processamento em lotes concluído!")
+```
+
+
+## Consulta e Análise Final
+
+Com todos os dados de voos relevantes no banco, uma consulta SQL é executada para calcular o tempo médio de atraso na chegada para cada aeroporto, juntando as informações das tabelas para obter os nomes completos dos aeroportos e das companhias aéreas
+
+```{r}
+# Define a consulta SQL para a análise
+query <- "
+SELECT
+    AVG(f.ARRIVAL_DELAY) AS atraso_medio,
+    a.IATA_CODE AS sigla_aeroporto,
+    a.AIRPORT AS nome_aeroporto,
+    al.AIRLINE AS nome_companhia
+FROM
+    flights f
+JOIN
+    airports a ON f.DESTINATION_AIRPORT = a.IATA_CODE
+JOIN
+    airlines al ON f.AIRLINE = al.IATA_CODE
+GROUP BY
+    a.IATA_CODE, a.AIRPORT, al.AIRLINE
+ORDER BY
+    atraso_medio DESC
+"
+
+resultado_final <- dbGetQuery(con, query)
+
+resultado_final
+```
+
+## Finalização
+
+
+```{r}
+# Desconecta do banco de dados
+dbDisconnect(con)
+```
+```
+
