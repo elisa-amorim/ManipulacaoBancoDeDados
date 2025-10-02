@@ -9,10 +9,10 @@
 
   <style>
     :root {
-      --primary-color: #0d47a1;    /* Azul escuro */
-      --secondary-color: #1976d2;  /* Azul médio */
-      --accent-color: #42a5f5;     /* Azul claro */
-      --background-color: #f4f8fb;
+      --primary-color: #0A2463;     /* Azul Marinho Profundo */
+      --secondary-color: #3E92CC;   /* Azul Céu */
+      --accent-color: #2CDA9D;      /* Verde Água Vibrante */
+      --light-blue: #D8F3DC;        /* Azul Muito Claro / Fundo */
       --card-background: #ffffff;
       --text-color: #333;
       --header-text-color: #ffffff;
@@ -26,30 +26,33 @@
 
     body {
       font-family: 'Poppins', sans-serif;
-      background: var(--background-color);
+      background-color: var(--light-blue);
       color: var(--text-color);
       line-height: 1.6;
       overflow-x: hidden;
+      /* Padrão geométrico sutil */
+      background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%233E92CC' fill-opacity='0.1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
     }
 
-    /* CABEÇALHO */
+    /* CABEÇALHO COM CORTE DIAGONAL */
     header {
       position: relative;
-      background: linear-gradient(120deg, var(--primary-color), var(--secondary-color));
+      background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
       color: var(--header-text-color);
       text-align: center;
-      padding: 80px 20px 120px;
-      overflow: hidden;
+      padding: 100px 20px 180px;
+      clip-path: polygon(0 0, 100% 0, 100% 85%, 0 100%);
     }
 
     header h1 {
-      font-size: 3em;
+      font-size: 3.2em;
       font-weight: 700;
       animation: slideIn 1s ease forwards;
       display: flex;
       align-items: center;
       justify-content: center;
       gap: 15px;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.2);
     }
 
     header p {
@@ -62,8 +65,8 @@
     /* CONTAINER */
     .container {
       width: 100%;
-      margin: -60px auto 50px;
-      padding: 0 40px; /* Aumentei o padding para telas largas */
+      margin: -120px auto 50px; /* Ajustado para o novo header */
+      padding: 0 40px;
       position: relative;
       z-index: 1;
     }
@@ -72,7 +75,7 @@
     .challenges-grid {
       display: grid;
       grid-template-columns: 1fr;
-      gap: 30px;
+      gap: 35px;
       list-style: none;
       animation: fadeUp 1.2s ease forwards;
     }
@@ -83,54 +86,66 @@
       }
     }
     
-    /* NOVO: Adicionado para telas maiores */
     @media (min-width: 1200px) {
       .challenges-grid {
         grid-template-columns: repeat(3, 1fr);
       }
     }
 
-    /* CARD */
+    /* CARD COM DETALHES */
     .challenge-card {
       background: var(--card-background);
       border-radius: 15px;
-      padding: 25px 30px;
-      box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+      padding: 30px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.09);
       transition: transform 0.3s ease, box-shadow 0.3s ease;
       position: relative;
       overflow: hidden;
-    }
-    
-    .challenge-card::before {
-      content: "";
-      position: absolute;
-      top: 0; left: -100%;
-      width: 100%; height: 100%;
-      background: linear-gradient(120deg, transparent, rgba(66,165,245,0.2), transparent);
-      transition: 0.5s;
-    }
-
-    .challenge-card:hover::before {
-      left: 100%;
+      border-top: 5px solid var(--secondary-color);
     }
 
     .challenge-card:hover {
-      transform: translateY(-8px);
-      box-shadow: 0 12px 30px rgba(0,0,0,0.12);
+      transform: translateY(-10px) scale(1.02);
+      box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+      border-top-color: var(--accent-color);
     }
 
     .challenge-card h3 {
-      margin: 0 0 20px;
-      font-size: 1.6em;
+      margin: 0 0 25px;
+      font-size: 1.8em;
       color: var(--primary-color);
       font-weight: 700;
+      z-index: 2;
+      position: relative;
+    }
+    
+    /* Forma decorativa no card */
+    .challenge-card::after {
+        content: '\f1c9'; /* Código para um ícone do Font Awesome (ex: file-code) */
+        font-family: "Font Awesome 6 Free";
+        font-weight: 900;
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        font-size: 4em;
+        color: var(--secondary-color);
+        opacity: 0.08;
+        transition: transform 0.4s ease;
+        z-index: 0;
     }
 
-    /* BOTÕES */
+    .challenge-card:hover::after {
+        transform: rotate(15deg);
+    }
+
+
+    /* BOTÕES COM GRADIENTE */
     .card-actions {
       display: flex;
       gap: 15px;
       flex-wrap: wrap;
+      z-index: 2;
+      position: relative;
     }
 
     .btn {
@@ -138,46 +153,49 @@
       align-items: center;
       justify-content: center;
       gap: 8px;
-      padding: 10px 20px;
+      padding: 12px 22px;
       border-radius: 8px;
       text-decoration: none;
       font-weight: 600;
       text-align: center;
       transition: all 0.3s ease;
       flex: 1;
-      border: 2px solid transparent;
+      border: none;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
     }
 
     .btn-view {
-      background: var(--secondary-color);
+      background: linear-gradient(45deg, var(--secondary-color), var(--accent-color));
       color: white;
     }
 
     .btn-view:hover {
-      background: var(--accent-color);
       transform: scale(1.05);
+      box-shadow: 0 6px 15px rgba(0,0,0,0.2);
     }
 
     .btn-download {
       background: transparent;
       color: var(--secondary-color);
-      border-color: var(--secondary-color);
+      border: 2px solid var(--secondary-color);
     }
 
     .btn-download:hover {
       background: var(--secondary-color);
       color: white;
       transform: scale(1.05);
+      box-shadow: 0 6px 15px rgba(0,0,0,0.2);
     }
 
-    /* FOOTER */
+    /* FOOTER ESTILIZADO */
     footer {
       text-align: center;
       font-size: 0.9em;
-      padding: 30px;
+      padding: 80px 30px 40px;
       background: var(--primary-color);
       color: white;
       margin-top: 50px;
+      clip-path: polygon(0 15%, 100% 0, 100% 100%, 0 100%);
     }
 
     /* ANIMAÇÕES */
