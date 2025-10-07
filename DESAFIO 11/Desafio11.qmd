@@ -1,0 +1,206 @@
+---
+title: "Desafio 11"
+author: "Elisa Amorim Da Costa"
+format: 
+  html:
+    self-contained: true
+editor: visual
+---
+
+```{python}
+
+import datetime
+
+print(f"Compilado em: {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+```
+
+## Preparação do Ambiente
+
+```{python}
+# Primeiro me certifico de que as bibliotecas necessárias estão instaladas
+
+import polars as pl
+from plotnine import ggplot, aes, geom_col, labs, theme_minimal
+
+```
+
+## Importação e Configuração dos Dados
+
+```{python}
+# Nome do arquivo local
+
+renda_adulta = "renda_adulta.csv.gz"
+
+# Nomes das colunas
+
+colunas = [
+    'age', 'workclass', 'fnlwgt', 'education', 'education-num',
+    'marital-status', 'occupation', 'relationship', 'race', 'sex',
+    'capital-gain', 'capital-loss', 'hours-per-week', 'native-country', 'income'
+]
+
+# Tipos de dados para cada coluna (Numérico -> pl.Int64, Categórico -> pl.Categorical)
+
+tipos_colunas = {
+    'age': pl.Int64,
+    'workclass': pl.Categorical,
+    'fnlwgt': pl.Int64,
+    'education': pl.Categorical,
+    'education-num': pl.Int64,
+    'marital-status': pl.Categorical,
+    'occupation': pl.Categorical,
+    'relationship': pl.Categorical,
+    'race': pl.Categorical,
+    'sex': pl.Categorical,
+    'capital-gain': pl.Int64,
+    'capital-loss': pl.Int64,
+    'hours-per-week': pl.Int64,
+    'native-country': pl.Categorical,
+    'income': pl.Categorical
+}
+
+
+# has_header=False: indica que o arquivo não tem cabeçalho
+# new_columns=colunas: atribui os nomes das colunas
+# dtypes=tipos_colunas: especifica o tipo de cada coluna na leitura
+# null_values="?": define o caracter que representa valores nulos
+# separator=", ": o separador neste arquivo é uma vírgula seguida de um espaço
+
+df_renda = pl.read_csv(
+    renda_adulta,
+    has_header =False,
+    new_columns = colunas,
+    schema_overrides=tipos_colunas,
+    null_values = "?",
+    separator = ","
+)
+
+# Visualizo as primeiras linhas
+
+print("Amostra do DataFrame:")
+print(df_renda.head())
+```
+
+## Tipos de cada coluna
+
+```{python}
+print("Tipos de dados de cada coluna:")
+print(df_renda.dtypes)
+```
+
+## Dimensões da tabela de dados
+
+```{python}
+dimensoes = df_renda.shape
+
+print(f"Dimensões da tabela de dados (linhas, colunas): {dimensoes}")
+```
+
+## Pergunta 1: Quantas pessoas recebem acima de $50.000 e quantas pessoas recebem abaixo deste limiar?
+
+```{python}
+# Agrupo por 'income' e conto as ocorrências
+
+contagem_renda = df_renda.group_by("income").len()
+
+print("Contagem de pessoas por faixa de renda:")
+print(contagem_renda)
+```
+
+## Criação do objeto renda_longo
+
+```{python}
+# Primeiro identifico as colunas que permanecerão fixas
+
+colunas_id = [col for col in df_renda.columns if col not in ['capital-gain', 'capital-loss']]
+
+# Uso a função unpivot para transformar o DataFrame
+
+renda_longo = df_renda.unpivot(
+    index = colunas_id,
+    on = ['capital-gain', 'capital-loss'],
+    variable_name = 'tipo',  # Nova coluna para 'capital-gain' e 'capital-loss'
+    value_name = 'Valor'     # Nova coluna para os valores correspondentes
+)
+
+# Ajusto a coluna 'tipo' para ter valores mais limpos ('gain' e 'loss')
+
+renda_longo = renda_longo.with_columns(
+    pl.when(pl.col("tipo") == "capital-gain")
+      .then(pl.lit("gain"))
+      .otherwise(pl.lit("loss"))
+      .alias("tipo")
+)
+
+print("Amostra do DataFrame 'renda_longo':")
+print(renda_longo.head())
+print("\nDimensões do novo DataFrame:", renda_longo.shape)
+```
+
+## Pergunta 2: Quais são as médias de horas trabalhadas por classe salarial?
+
+```{python}
+# Agrupo por 'income' e calculo a média de 'hours-per-week' 
+
+media_horas_por_renda = df_renda.group_by("income").agg(
+    pl.mean("hours-per-week").alias("media_horas_semanais")
+)
+
+print("Média de horas trabalhadas por semana, por faixa de renda:")
+print(media_horas_por_renda)
+```
+
+## Pergunta 3: Quantas pessoas foram amostradas em cada profissão?
+
+```{python}
+# Agrupo por 'occupation' e conto o número de pessoas
+
+contagem_profissao = df_renda.group_by("occupation").len().sort("len", descending=True)
+
+print("Número de pessoas amostradas por profissão:")
+print(contagem_profissao)
+```
+
+## Gráfico de barras: Horas trabalhadas vs. Nível salarial
+
+```{python}
+# Uso novamente o DataFrame 'media_horas_por_renda'
+# A função ggplot espera um DataFrame do pandas, então converto com .to_pandas() para utilização
+
+grafico = (
+    ggplot(media_horas_por_renda.to_pandas(), aes(x='income', y='media_horas_semanais'))
+    + geom_col(fill="#4682B4")
+    + labs(
+        title="Média de Horas Trabalhadas Semanalmente por Faixa Salarial",
+        x="Faixa Salarial",
+        y="Média de Horas Trabalhadas"
+    )
+    + theme_minimal()
+)
+
+# Forçei a exibição do gráfico com `grafico.show()`, pois com `print(grafico)`aparecia apenas um representação textual
+
+grafico.show()
+```
+
+## Desafio: Existe alguma evidência de discriminação salarial entre gêneros biológicos?
+
+
+```{python}
+
+# 1°: Agrupar por gênero ('sex') e faixa salarial ('income') e contar
+contagem_genero_renda = df_renda.group_by("sex", "income").len()
+
+# 2°: Calcular o total de pessoas por gênero para usar como base para o percentual
+total_por_genero = df_renda.group_by("sex").len().rename({"len": "total_sex"})
+
+# 3°: Juntar as duas tabelas para calcular a proporção
+analise_discriminacao = contagem_genero_renda.join(
+    total_por_genero, on="sex"
+).with_columns(
+    (pl.col("len") / pl.col("total_sex") * 100).round(2).alias("percentual")
+)
+
+print("Análise de distribuição de renda por gênero:")
+print(analise_discriminacao.sort("sex", "income"))
+```
